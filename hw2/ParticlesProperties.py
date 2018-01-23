@@ -33,16 +33,24 @@ vynew = data['vy'][Vyindex]*1.0*u.kilometer/u.second
 Vzindex = np.where(data['vz'][:100])           #the z velocity of the 100th particle
 vznew = data['vz'][Vzindex]*1.0*u.kilometer/u.second
 
+#---3D distance
+distance = np.sqrt(dxnew[-1]**2 + dynew[-1]**2 + dznew[-1]**2)
+print"3D-distance:"
+print(distance)
+
 #---convert distance using astropy
 lyr = u.lyr
 xconv = dxnew.to(lyr)
 yconv = dynew.to(lyr)
 zconv = dznew.to(lyr)
+D = distance.to(lyr) 
 
 print"Mass, X Position, Y Position, Z Position, X Velocity, Y Velocity, Z Velocity"
 print(np.around(mnew[-1],3), np.around(xconv[-1],3),
       np.around(yconv[-1],3), np.around(zconv[-1],3),
       np.around(vxnew[-1],3), np.around(vynew[-1],3),np.around(vznew[-1],3))
+print"3D-distance Converted to Lightyears:"
+print(np.around(D,3))
 
 #---notes
 """
