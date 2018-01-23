@@ -34,15 +34,15 @@ Vzindex = np.where(data['vz'][:100])           #the z velocity of the 100th part
 vznew = data['vz'][Vzindex]*1.0*u.kilometer/u.second
 
 #---convert distance using astropy
-kms = u.kilometer / u.second
-lyr = u.lyr / u.yr
-kms.to(lyr)
-
+lyr = u.lyr
+xconv = dxnew.to(lyr)
+yconv = dynew.to(lyr)
+zconv = dznew.to(lyr)
 
 print"Mass, X Position, Y Position, Z Position, X Velocity, Y Velocity, Z Velocity"
-print(mnew[-1],dxnew[-1],dynew[-1],dznew[-1],vxnew[-1],vynew[-1],vznew[-1])
-
-
+print(np.around(mnew[-1],3), np.around(xconv[-1],3),
+      np.around(yconv[-1],3), np.around(zconv[-1],3),
+      np.around(vxnew[-1],3), np.around(vynew[-1],3),np.around(vznew[-1],3))
 
 #---notes
 """
