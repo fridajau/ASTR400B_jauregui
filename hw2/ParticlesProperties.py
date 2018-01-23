@@ -47,12 +47,12 @@ vznew = newdata['vz'][Vzindex]*1.0*u.kilometer/u.second
 #---3D distance
 distance = np.sqrt(dxnew[-1]**2 + dynew[-1]**2 + dznew[-1]**2)
 print"3D-distance:"
-print(distance)
+print(np.around(distance,3))
 
 #---3D
 velocity = np.sqrt(vxnew[-1]**2 + vynew[-1]**2 + vznew[-1]**2)
 print"3D-velocity:"
-print(velocity)
+print(np.around(velocity,3))
 
 #---convert distance using astropy
 lyr = u.lyr
