@@ -49,7 +49,7 @@ distance = np.sqrt(dxnew[-1]**2 + dynew[-1]**2 + dznew[-1]**2)
 print"3D-distance:"
 print(np.around(distance,3))
 
-#---3D
+#---3D velocity
 velocity = np.sqrt(vxnew[-1]**2 + vynew[-1]**2 + vznew[-1]**2)
 print"3D-velocity:"
 print(np.around(velocity,3))
