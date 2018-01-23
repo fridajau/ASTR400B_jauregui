@@ -11,7 +11,7 @@ import astropy.units as u
 data = np.genfromtxt("MW_000.txt",dtype=None,names=True,
                      skip_header=3)
 
-#---Want Disk particle
+#---Disk particle
 indextype = np.where(data['type']>1)
 newdata = data[:][indextype]
 """
