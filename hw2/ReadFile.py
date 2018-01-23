@@ -6,7 +6,7 @@ ASTR400b HW2 Due Jan 23
 import numpy as np
 import astropy.units as u
 
-
+#---open and read txt file
 filename = "MW_000.txt"                #assign the file
 file = open(filename,'r')              #open the file and read
 line1 = file.readline()                #read line 1
@@ -22,15 +22,14 @@ print(time, particles)
 
 file.close()                           #close file
     
-#store the rest of the file starting from line 4
+#---store the rest of the file starting from line 4, print/check data
 data = np.genfromtxt("MW_000.txt",dtype=None,names=True,
                      skip_header=3)
-#return time, total particles and data to call back
 print"Data:"
 print(data)
 
 """
-###----check and extract  data
+#---try to extract  data and understand
 
 data = np.genfromtxt("MW_000.txt",dtype=None,names=True,
                      skip_header=3)
@@ -40,7 +39,7 @@ print"X-position:"
 print(xnew[-1])
 """
 
-###---notes
+#---notes
 """
 keeping this as a function I couldnt print anything back, it just 
 compiled so I just wrote this assignment as lines of code and printed 
