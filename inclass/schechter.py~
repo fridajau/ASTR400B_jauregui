@@ -1,0 +1,53 @@
+"""
+Frida Jauregui
+ASTR400b
+In class worksheet 1
+Jan 25, 2018
+"""
+import numpy as np
+import astropy.units as u
+from pylab import *
+from scipy.integrate import quad
+
+"""
+#---goal
+plot the schechter function
+"""
+
+def Schechter(alpha, M_star, phi_star, M):
+    phi = (0.4*np.log(10))*phi_star*10**(0.4*(M_star - M)*(alpha + 1))*exp(-10**(0.4*(M_star - M)))
+    return phi
+
+#---plot
+phi_star = 1.66*10**(-2) 
+alpha = -0.81
+M_star = -23.19
+M = np.arange(-26, -17, 0.1)
+
+plt.figure()
+plt.plot(M, Schechter(alpha, M_star, phi_star, M))
+
+plt.semilogy()
+plt.xlim(-17, -26)
+
+#plt.xlabel()
+#plt.ylabel()
+
+
+#---new alpha inputs
+plt.plot(M, Schechter(-1.35, M_star, phi_star, M))
+plt.plot(M, Schechter(-0.6, M_star, phi_star, M))
+#plt.show()
+
+
+#---IMF
+def Salpeter(Z, SM, a):
+    SIMF = 1/Z*(SM)**(-a)
+    return SIMF
+
+Z = quad(lambda SM: Salpeter(1, SM, 2.35), 0.1, 120)
+print(Z)
+
+print(quad(lambda SM: Salpeter(Z, SM, 2.35), 1.0, 120))
+
+
