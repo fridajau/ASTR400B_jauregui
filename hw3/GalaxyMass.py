@@ -29,7 +29,8 @@ def ComponentMass(PType, filename):
     mnew = data['m'][index]*1e10*u.Msun
     totalmass = np.around(mnew,3)              
     return totalmass
-
+"""
+#---check work
 print("The Milky Way mass components")
 print("")
 
@@ -71,6 +72,4 @@ print("Total Mass of Halo Component:",np.around(TM_M33H[0],3))
 #---Total mass of M33 Disk
 TM_M33D = ComponentMass(2, "M33_000.txt")
 print("Total Mass of Disk Component:",np.around(TM_M33D[0],3))
-
-
-    
+"""
