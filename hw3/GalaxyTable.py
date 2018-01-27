@@ -56,9 +56,9 @@ TM_M33H = [np.around(ComponentMass(1, "M33_000.txt"),3)[0]]
 TM_M33D = [np.around(ComponentMass(2, "M33_000.txt"),3)[0]]
 
 #---Total Mass of each Galaxy and Fbar
-TMMW  = TM_MWH + TM_MWD + TM_MWB
-TMM31 = TM_M31H + TM_M31D + TM_M31B
-TMM33 = TM_M33H + TM_M33D
+TMMW  = TM_MWH + TM_MWD + TM_MWB               #wont add this
+TMM31 = TM_M31H + TM_M31D + TM_M31B            #adds this no problem
+TMM33 = TM_M33H + TM_M33D                      #wont add this
 #TMLG  = TMMW + TMM31 + TM33
 
 #fmw  = (TM_MWD+TM_MWB)/(TMMW) 
@@ -83,10 +83,10 @@ t.add_column(fabrcol)
 #t.add_Row(TMLG, 'Total Mass of Local Group')
 #t.add_Row(flg, 'f_bar for Local Group')
 
-
-
-
-
 print(t)
 
-
+"""
+#---notes
+wont add the values for Milky Way or M33 without placing [] in mass break down section
+or else i get an ValueError: setting an array element with a sequence.
+"""
