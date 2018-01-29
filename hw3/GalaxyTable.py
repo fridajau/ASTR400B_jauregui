@@ -30,63 +30,68 @@ Save: as PDF BONUS if table is created by LaTeX
 
 #---MW mass components
 #---Total mass of MW Halo
-TM_MWH = [np.around(ComponentMass(1, "MW_000.txt"),3)[0]]
-##print(TM_MWH)
+TM_MWH = np.around(ComponentMass(1, "MW_000.txt")/1e12, 3)
 #---Total mass of MW Disk
-TM_MWD = [np.around(ComponentMass(2, "MW_000.txt"),3)[0]]
+TM_MWD = np.around(ComponentMass(2, "MW_000.txt")/1e12, 3)
 #---Total mass of MW Bulge
-TM_MWB = [np.around(ComponentMass(3, "MW_000.txt"),3)[0]]
+TM_MWB = np.around(ComponentMass(3, "MW_000.txt")/1e12, 3)
 
 
 #---M31 mass components
 #---Total mass of M31 Halo
-TM_M31H = np.around(ComponentMass(1, "M31_000.txt"),3)[0]
-##print(TM_M31H)
+TM_M31H = np.around(ComponentMass(1, "M31_000.txt")/1e12, 3)
 #---Total mass of M31  Disk
-TM_M31D = np.around(ComponentMass(2, "M31_000.txt"),3)[0]
+TM_M31D = np.around(ComponentMass(2, "M31_000.txt")/1e12, 3)
 #---Total mass of M31 Bulge
-TM_M31B = np.around(ComponentMass(3, "M31_000.txt"),3)[0]
+TM_M31B = np.around(ComponentMass(3, "M31_000.txt")/1e12, 3)
 
 
 #---M33 mass components
 #---Total mass of M33 Halo
-TM_M33H = [np.around(ComponentMass(1, "M33_000.txt"),3)[0]]
-##print(TM_M33H)
+TM_M33H = np.around(ComponentMass(1, "M33_000.txt")/1e12, 3)
 #---Total mass of M33 Disk
-TM_M33D = [np.around(ComponentMass(2, "M33_000.txt"),3)[0]]
+TM_M33D = np.around(ComponentMass(2, "M33_000.txt")/1e12, 3)
 
-#---Total Mass of each Galaxy and Fbar
-TMMW  = TM_MWH + TM_MWD + TM_MWB               #wont add this
-TMM31 = TM_M31H + TM_M31D + TM_M31B            #adds this no problem
-TMM33 = TM_M33H + TM_M33D                      #wont add this
-#TMLG  = TMMW + TMM31 + TM33
 
-#fmw  = (TM_MWD+TM_MWB)/(TMMW) 
-fm31 = (TM_M31D+TM_M31B)/(TMM31)
-#fm33 = (TM_M33D)/(TM33)
-#flg  = (TM_MWD+TM_MWB+TM_M31D+TM_M31B+TM_M33D+TM_M33B)/(TMLG) 
+#---Total Mass of each Galaxy and Baryon Fraction
+TMMW  = np.around(TM_MWH + TM_MWD + TM_MWB, 3)               
+TMM31 = np.around(TM_M31H + TM_M31D + TM_M31B, 3)           
+TMM33 = np.around(TM_M33H + TM_M33D, 3)                      
+TMLG  = np.around(TMMW + TMM31 + TMM33, 3)
+#---Check with print statements
+fmw  = np.around((TM_MWD+TM_MWB)/(TMMW), 4)
+fm31 = np.around((TM_M31D+TM_M31B)/(TMM31), 4)
+fm33 = np.around((TM_M33D)/(TMM33),4)
+flg  = np.around((TM_MWD+TM_MWB+TM_M31D+TM_M31B+TM_M33D)/(TMLG), 4)
 
+u = u.Msun
 
 #---Table
-t = Table([['Milky Way', 'M31', 'M33'],[TM_MWH,TM_M31H,TM_M33H], [TM_MWD,TM_M31D,TM_M33D]],
-          names=('Galaxy Name', 'Halo Mass', 'Disk Mass'))
 
-bulgecol = Column(name='Bulge Mass', data=[TM_MWB,TM_M31B,' '])
-t.add_column(bulgecol)
+t = Table()
 
-totalmasscol = Column(name='Total Mass', data=[TMMW,TMM31,TMM33])
-t.add_column(totalmasscol)
+galacol = Column(name='Galaxy Name', data=['Milky Way','M31','M33'])
+#discol  = Column(name='Disk Mass',   data=[TM_MWD,TM_M31D,TM_M33D], unit=u)
+bulcol  = Column(name='Bulge Mass',  data=[TM_MWB,TM_M31B,' '], unit=u)
+#totcol  = Column(name='Total Mass',  data=[TMMW,TMM31,TMM33], unit=u)
+t.add_column(galacol)
+#t.add_column(discol)
+t.add_column(bulcol)
+#t.add_column(totcol)
 
-fabrcol = Column(name='f_bar', data=[' ',fm31,' '])
+fabrcol = Column(name='f_bar', data=[fmw,fm31,fm33])
 t.add_column(fabrcol)
 
-#t.add_Row(TMLG, 'Total Mass of Local Group')
-#t.add_Row(flg, 'f_bar for Local Group')
+totlgcol =  Column(name='Total Mass of Local Group', data=[TMLG, '', ''], unit=u)
+flgcol   =  Column(name='f_bar for Local Group',     data=[flg, '', ''])
+t.add_column(totlgcol)
+t.add_column(flgcol)
+
+t.info
 
 print(t)
 
 """
 #---notes
-wont add the values for Milky Way or M33 without placing [] in mass break down section
-or else i get an ValueError: setting an array element with a sequence.
+I get an ValueError: setting an array element with a sequence in several columns w/out knowing why.
 """
