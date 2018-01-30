@@ -27,7 +27,7 @@ def ComponentMass(PType, filename):
 
     #---Mass
     mnew = data['m'][index]
-    totalmass = np.around((np.sum(mnew)*1e10*u.Msun),3)              
+    totalmass = np.around((np.sum(mnew)*1e10*u.Msun),3)    #sum total mass            
     return totalmass
 """
 #---check work
