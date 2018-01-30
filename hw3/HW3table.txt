@@ -1,9 +1,48 @@
-\begin{table}
-\begin{tabular}{cccccccc}
-Galaxy Name & Halo Mass & Disk Mass & Bulge Mass & Total Mass & f_bar & Total Mass of Local Group & f_bar for Local Group \\
- & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ &  & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ &  \\
-Milky Way & 1.975 & 0.075 & 0.01 & 2.06 & 0.0413 & 4.316 & 0.054 \\
-M31 & 1.921 & 0.12 & 0.019 & 2.06 & 0.0675 &  &  \\
-M33 & 0.187 & 0.009 &  & 0.196 & 0.0459 &  &  \\
-\end{tabular}
+\documentclass{exam}
+\usepackage[utf8]{inputenc}
+
+\title{HW3 Questions}
+\author{Frida Jauregui}
+\date{January 30, 2018}
+
+\usepackage{amsmath,amssymb}
+\usepackage[margin=0.3in]{geometry}
+\usepackage{indentfirst}
+\begin{document}
+
+\maketitle{}
+
+\section{Table}
+
+
+\begin{table}[ht]
+    \begincentering
+    \begin{tabular}{cccccccc}
+    Galaxy Name & Halo Mass & Disk Mass & Bulge Mass & Total Mass & f_b & Total Mass of Local Group & f_b for Local Group \\
+    & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ &  & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ &  \\ \hline
+    Milky Way & 1.975 & 0.075 & 0.01 & 2.06 & 0.0413 & 4.316 & 0.054 \\
+    M31 & 1.921 & 0.12 & 0.019 & 2.06 & 0.0675 &  &  \\
+    M33 & 0.187 & 0.009 &  & 0.196 & 0.0459 &  &  \\
+    \end{tabular}
+    \caption{Mass Break Down of the Local Group}
+    \label{tab:my_label}
 \end{table}
+\endcentering
+
+
+\section{Answer to Questions}
+
+
+\begin{questions}
+\question The total mass of the MW and M31 are the same in this simulation. 
+The Halo Mass component dominates in the Total Mass.
+
+\question The Stellar Mass of the MW is 0.085 and for M31 it's 0.139, 
+I didn't expect M31 to be more luminous, but we can see Andromeda with our naked eye, so with it's Stellar Mass being greater than ours, I expect M31 to be more luminous.
+
+\question The ratio between the MW and M31 is 0.526, I don't find it that surprising considering M31 has a bigger Stellar Mass.
+
+\question From the table above, we can see that the Baryon fraction for each galaxy is lower than the Baryon fraction in the Universe. They might differ between each due to our little understanding of Dark Matter, not to mention that for M33 it contains no bulge, yet it's Baryon fraction is still greater than our own galaxy's Baryon fraction. With this we can say that the different Baryon fractions will vary with the structure of the object, taking in account of the whole Universe will be different than taking in account individual galaxies. 
+\end{questions}
+
+\end{document}
