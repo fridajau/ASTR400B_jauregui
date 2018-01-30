@@ -54,8 +54,6 @@ TM_M33H = np.around(ComponentMass(1, "M33_000.txt")/1e12, 3)
 TM_M33D = np.around(ComponentMass(2, "M33_000.txt")/1e12, 3)
 
 
-
-
 #---Total Mass of each Galaxy and Baryon Fraction
 TMMW  = np.around(TM_MWH + TM_MWD + TM_MWB, 3)               
 TMM31 = np.around(TM_M31H + TM_M31D + TM_M31B, 3)           
