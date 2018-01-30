@@ -1,0 +1,9 @@
+\begin{table}
+\begin{tabular}{cccccccc}
+Galaxy Name & Halo Mass & Disk Mass & Bulge Mass & Total Mass & f_bar & Total Mass of Local Group & f_bar for Local Group \\
+ & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ &  & $\mathrm{1 \times 10^{12}\,M_{\odot}}$ &  \\
+Milky Way & 1.975 & 0.075 & 0.01 & 2.06 & 0.0413 & 4.316 & 0.054 \\
+M31 & 1.921 & 0.12 & 0.019 & 2.06 & 0.0675 &  &  \\
+M33 & 0.187 & 0.009 &  & 0.196 & 0.0459 &  &  \\
+\end{tabular}
+\end{table}
