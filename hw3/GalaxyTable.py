@@ -91,14 +91,14 @@ flgcol   =  Column(name='f_bar for Local Group',     data=[flg, '', ''])
 t.add_column(totlgcol)
 t.add_column(flgcol)
 
-#---Print and save as text with LaTex
+#---Print and save text with LaTex
 print(t)
 t.write(tabletxt, format='latex', overwrite=True)
 
 """
 #---notes
-I get an ValueError: setting an array element with a sequence in several columns w/out knowing why.
-so far I printed and obtained the vaules for:
+I get an ValueError: setting an array element with a sequence in M33 vaules
+To place the vaules I printed:
 M33H, M33D, and TMM33
 print("halo mass m33")
 print(TM_M33H)
@@ -106,4 +106,5 @@ print("disk mass m33")
 print(TM_M33D)
 print("tot mass m33")
 print(TMM33)
+and placed them on to the table
 """
