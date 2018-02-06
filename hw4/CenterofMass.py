@@ -43,54 +43,64 @@ class CenterOfMass:
 
     def COMdefine(self, x,y,z, m):
         #---position
-        pos = (np.sqrt((self.x)**2 + (self.y)**2 + (self.z)**2))*u.kpc
+        pos3d = (np.sqrt(self.x**2 + self.y**2 + self.z**2))*u.kpc
        
-        #---velocity
-        vel = (np.sqrt((self.vx)**2 + (self.vy)**2 + (self.vz)**2))*u.km/u.s
-
         #---total mass
         totmass = np.sum(self.m)*u.Msun*1e10
         
-        #---while loop to return 3D position and total mass 
-        while(self.total < 1):
-            X = (pos*totmass)/totmass
-            print(X)
+        #---define COM of x,y,z
+        XCOM = np.sum(self.x*m)/(totmass)
+        YCOM = np.sum(self.y*m)/(totmass)
+        ZCOM = np.sum(self.z*m)/(totmass)
+        pos = (XCOM,YCOM,ZCOM)
 
         return pos, totmass
 
-#---Input:  tolerance
+#---Input:  tolerance (small like 1)
 #---Output: returns an array with the x,y,z coords of the COM position
 
-    def COM_P(self, x,y,z, m):
-        totmass = np.sum(self.m)*u.Msun*1e10
+    def COM_P(self, delta):
+        #---COM position vector estimate
+        XCOM, YCOM, ZCOM = self.COMdefine(self.x, self.y, self.z, self.m)
         
-        #---COM position vector 
-        XCOM = (self.x*totmass)/totmass
-        YCOM = (self.y*totmass)/totmass
-        ZCOM = (self.z*totmass)/totmass
-        #---magnitude of the new position vector
-        RCOM = np.linalg.norm(self.COMdefine(self, XCOM,YCOM,ZCOM, m))
+        #---magnitude of the desired vector
+        RCOM = np.linalg.norm(self.COMdefine(XCOM,YCOM,ZCOM, m))
         
-        #---changing particle position vector 
+        #---changing particle position vector to the COM frame 
         XNEW = (self.x - XCOM)
         YNEW = (self.y - YCOM)
         ZNEW = (self.z - ZCOM)
-
-        RNEW = np.linalg.norm(self.COMdefine(self, XNEW,YNEW,ZNEW, m))
-#######################################
-        #---maximum 3D separation of the particles 
-        RMAX = 0.5*(np.linalg.norm(self.x, self.y, self.z, m))
+        #---mangitude of the new position vectors
+        RNEW = np.linalg.norm(self.COMdefine(XNEW,YNEW,ZNEW, m))
+        
+        #---maximum 3D separation of the particles from the COM position
+        RMAX = np.max(RNEW)/2
 
         #---while loop for RCOM - new COM > delta
-        delta  = 10
-        newCOM = 1000*u.kpc
-        while(RCOM - newCOM > delta):
-            RCOM2 = RCOM - newCOM
-            print(RCOM2)/2
+        RCOM2 = 1000*u.kpc
+        while(RCOM2) > delta:
+            #---index particles 
+            newindex = np.where(RMAX > RNEW)
+            x2 = self.x[newindex]
+            y2 = self.y[newindex]
+            z2 = self.z[newindex]
+            m2 = self.m[newindex]
+            #---redefine for 1st guess
+            XCOM2, YCOM2, ZCOM2 = self.COMdefine(self.x, self.y, self.z, self.m)
+            RCOM2 = np.linalg.norm(self.COMdefine(XCOM2,YCOM2,ZCOM2, m))
+            
+            #---new change of position vector
+            ncx = (x2 - XCOM2)
+            ncy = (y2 - YCOM2)
+            ncz = (z2 - ZCOM2)
+
+            
+            #RCOM2 = RCOM - COM
+            #print(RCOM2)/2
 
         return RCOM2
 
-#---Input:  tolerance
+#---Input:  vx,vy,vz and mass
 #---Output: returns an array with the x,y,z coords of the COM position
 
     def COM_V(self, vx,vy,vz, m):
@@ -101,16 +111,18 @@ class CenterOfMass:
         newindex = ma.masked_where(vel > 15, vel)
         newvel   = vel[newindex]
 
-        VCOM = self.COMdefine(self, vel, m)
+        VCOM = self.COMdefine(newvel, m)
 
         return VCOM
-    
-#---prints COM position and velocity of MW disk properties
-MWCOM = CenterOfMass("MW_000.txt", 2)
-#MW_P  = MWCOM.COM_P(0,0,0,0)
-#print("MW COM Disk:", MWCOM)
 
-#---prints vaule of disk mass of galaxy and the 3d position vector              
+
+
+
+
+    
+
+#---prints vaule of disk mass of galaxy
+MWCOM = CenterOfMass("MW_000.txt", 2)
 MW_mass = MWCOM.COMdefine(0,0,0,0)
 print("MW Disk Mass:", MW_mass)
 
