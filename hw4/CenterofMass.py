@@ -105,11 +105,17 @@ class CenterOfMass:
 
     def COM_V(self, vx,vy,vz):
         #---store velocities
-        VXCOM, VYCOM, VZCOM = self.COMdefine(self.x, self.y, self.z, self.m)
+        VXCOM, VYCOM, VZCOM = self.COMdefine(vx,vy,vz, self.m)
         VRCOM = np.sqrt(VXCOM**2 + VYCOM**2 + VZCOM**2)
 
+        #---change to COM frame
+        VXNEW = (vx - VXCOM)
+        VYNEW = (vy - VYCOM)
+        VZNEW = (vz - VZCOM)
+        VRNEW = np.sqrt(VXNEW**2 + VYNEW**2 + VZNEW**2)
+
         #---store velocities within 15kpc from the COM position
-        vindex = np.where(VRCOM > 15)
+        vindex = np.where(VRNEW < 15)[0]
         vxnew  = vx[vindex]
         vynew  = vy[vindex]
         vznew  = vz[vindex]
@@ -120,25 +126,40 @@ class CenterOfMass:
 
 #---prints vaule for x,y,z
 MWCOM = CenterOfMass("MW_000.txt", 2)
-MW_mass = MWCOM.COMdefine(MWCOM.x, MWCOM.y, MWCOM.z, MWCOM.m)
-print("MW Disk Mass:", MW_mass)
+#MW_mass = MWCOM.COMdefine(MWCOM.x, MWCOM.y, MWCOM.z, MWCOM.m)
+#print("MW Disk Mass:", np.around(MW_mass,3)*u.Msun)
 
 M31COM = CenterOfMass("M31_000.txt", 2)
-M31_mass = M31COM.COMdefine(M31COM.x, M31COM.y, M31COM.z ,M31COM.m)
-print("M31 Disk Mass:", M31_mass)
+#M31_mass = M31COM.COMdefine(M31COM.x, M31COM.y, M31COM.z ,M31COM.m)
+#print("M31 Disk Mass:", np.around(M31_mass,3)*u.Msun)
 
 M33COM = CenterOfMass("M33_000.txt", 2)
-M33_mass = M33COM.COMdefine(M33COM.x, M33COM.y, M33COM.z, M33COM.m)
-print("M33 Disk Mass:", M33_mass)
+#M33_mass = M33COM.COMdefine(M33COM.x, M33COM.y, M33COM.z, M33COM.m)
+#print("M33 Disk Mass:", np.around(M33_mass,3)*u.Msun)
+
 
 #---Testing your code
+print"Problem 1:"
 MW_pos = MWCOM.COM_P(1)
-print("COM Disk position for MW:", MW_pos)
-
+print"COM Disk position for MW:", np.around(MW_pos,3)*u.kpc
 M31_pos = M31COM.COM_P(1)
-print("COM Disk position for M31:", M31_pos)
-
+print"COM Disk position for M31:", np.around(M31_pos,3)*u.kpc
 M33_pos = M33COM.COM_P(1)
-print("COM Disk position for M33:", M33_pos)
+print"COM Disk position for M33:", np.around(M33_pos,3)*u.kpc
 
+MW_vel = MWCOM.COM_V(MWCOM.vx, MWCOM.vy, MWCOM.vz)
+print"COM Disk velocity for MW:", np.around(MW_vel,3)*u.km/u.s
+M31_vel = M31COM.COM_V(M31COM.vx, M31COM.vy, M31COM.vz)
+print"COM Disk velocity for M31:", np.around(M31_vel,3)*u.km/u.s
+M33_vel = M33COM.COM_V(M33COM.vx, M33COM.vy, M33COM.vz)
+print"COM Disk velocity for M33:", np.around(M33_vel,3)*u.km/u.s
 
+print""
+print"Problem 2 & 3:"
+#MWM31_sep = MW_pos - M31_pos
+
+#MAGMWM31 = np.sqrt(MWM31_sep**2)
+#print"Magnitude of the seperation b/t MW and M31:", np.around(MAGMWM31,3)
+print""
+print"Problem 4:"
+print"The iterative process is important because in order to understand the outcome of the merger, one needs to fully know the internal structure of the two objects. You need to know how the MW and M31 behaves in order to make accuate simulations of the merger."
