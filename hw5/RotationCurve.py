@@ -161,19 +161,21 @@ MWD = MWP.MassEnclosed(2,Rarry)
 MWB = MWP.MassEnclosed(3,Rarry)
 MWT = MWP.MassEnclosedTotal(Rarry)
 
-print("MWH:", MWH)
-print("MWD:", MWD)
-print("MWB:", MWB)
+#print("MWH:", MWH)
+#print("MWD:", MWD)
+#print("MWB:", MWB)
 
 #---HR profile
-MWHR = MWP.HernquistMass(Rarry, 15, MWH[0])
+MWHR  = MWP.HernquistMass(Rarry,  62, MWH)
+#M31HR = M31P.HernquistMass(Rarry, 62, MWH[0])
+#M33HR = M33P.HernquistMass(Rarry, 25, MWH[0])
 
 #---plotting halo, disk, bulge, total, and HR 
 plt.semilogy(Rarry, MWH,  color='blue',  label='Halo Mass')
 plt.semilogy(Rarry, MWD,  color='red',   label='Disk Mass')
 plt.semilogy(Rarry, MWB,  color='green', label='Bulge Mass')
 plt.semilogy(Rarry, MWT,  color='yellow',label='Total Mass')
-plt.semilogy(Rarry, MWHR, color='black', label='Hernquist a=15')
+plt.semilogy(Rarry, MWHR, color='black', label='Hernquist for MW a=62')
 
 
 plt.title('Milky Way Mass Profile')
