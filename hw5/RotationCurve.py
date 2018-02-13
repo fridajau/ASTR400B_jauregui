@@ -165,9 +165,9 @@ MWT = MWP.MassEnclosedTotal(Rarry)
 #print("MWD:", MWD)
 #print("MWB:", MWB)
 
-#---HR profile
+#---HR profile want to give total Halo Mass NOT massenc Galaxy Halo Mass
 MWHR  = MWP.HernquistMass(Rarry,  62, MWH)
-#M31HR = M31P.HernquistMass(Rarry, 62, MWH[0])
+#M31HR = M31P.HernquistMass(Rarry, 62, MWH)
 #M33HR = M33P.HernquistMass(Rarry, 25, MWH[0])
 
 #---plotting halo, disk, bulge, total, and HR 
@@ -175,9 +175,11 @@ plt.semilogy(Rarry, MWH,  color='blue',  label='Halo Mass')
 plt.semilogy(Rarry, MWD,  color='red',   label='Disk Mass')
 plt.semilogy(Rarry, MWB,  color='green', label='Bulge Mass')
 plt.semilogy(Rarry, MWT,  color='yellow',label='Total Mass')
+
 plt.semilogy(Rarry, MWHR, color='black', label='Hernquist for MW a=62')
+#plt.semilogy(Rarry, MWHR, color='black', label='Hernquist for MW a=62')
 
-
+#---titles~ things~
 plt.title('Milky Way Mass Profile')
 plt.xlabel('From Center of Mass [kpc]')
 plt.ylabel('Mass Enclosed (Msun)')
