@@ -195,13 +195,25 @@ legend = ax.legend(loc='lower right')
 figure = plt.figure(2)
 a2x = plt.subplot(111)
 
-MWROT  =  MWP.CircularVelocity(1,Rarry)
-M31ROT = M31P.CircularVelocity(1,Rarry)
-M33ROT = M33P.CircularVelocity(1,Rarry)
+#---assigning vel for halo mass (disk =2 and bulge =3) and total vel
+MWROT   = MWP.CircularVelocity(1,Rarry)
+M31ROT  = M31P.CircularVelocity(1,Rarry)
+M33ROT  = M33P.CircularVelocity(1,Rarry)
 
+MWROTT  = MWP.CircularVelocityTotal(Rarry)
+M31ROTT = M31P.CircularVelocityTotal(Rarry)
+M33ROTT = M33P.CircularVelocityTotal(Rarry)
+
+
+#---can repeat this for disk mass and bulge mass
 plt.semilogy(Rarry, MWROT, color='blue', linestyle="--", label='Halo Mass for MW')
 plt.semilogy(Rarry, M31ROT, color='blue', linestyle=":", label='Halo Mass for M31')
 plt.semilogy(Rarry, M33ROT, color='blue', linestyle="-", label='Halo Mass for M33')
+
+#---total CV
+plt.semilogy(Rarry, MWROTT, color='pink', linestyle="-", label='Total Cricular Vel MW')
+plt.semilogy(Rarry, M31ROTT, color='pink', linestyle=":", label='Total Cricular Vel M31')
+plt.semilogy(Rarry, M33ROTT, color='pink', linestyle="-", label='Total Cricular Vel M33')
 
 #---titles~ things~
 plt.title('Milky Way Rotation Curve')
