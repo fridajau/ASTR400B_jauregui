@@ -204,16 +204,24 @@ MWROTT  = MWP.CircularVelocityTotal(Rarry)
 M31ROTT = M31P.CircularVelocityTotal(Rarry)
 M33ROTT = M33P.CircularVelocityTotal(Rarry)
 
+MWHRCV  = MWP.HernquistVCirc(Rarry,  62, MWROT)
+M31HRCV = M31P.HernquistVCirc(Rarry, 62, M31ROT)
+M33HRCV = M33P.HernquistVCirc(Rarry, 25, M33ROT)
 
 #---can repeat this for disk mass and bulge mass
-plt.semilogy(Rarry, MWROT, color='blue', linestyle="--", label='Halo Mass for MW')
-plt.semilogy(Rarry, M31ROT, color='blue', linestyle=":", label='Halo Mass for M31')
-plt.semilogy(Rarry, M33ROT, color='blue', linestyle="-", label='Halo Mass for M33')
+plt.semilogy(Rarry, MWROT, color='purple', linestyle="--", label='Halo Mass for MW')
+plt.semilogy(Rarry, M31ROT, color='purple', linestyle=":", label='Halo Mass for M31')
+plt.semilogy(Rarry, M33ROT, color='purple', linestyle="-", label='Halo Mass for M33')
 
 #---total CV
 plt.semilogy(Rarry, MWROTT, color='pink', linestyle="-", label='Total Cricular Vel MW')
 plt.semilogy(Rarry, M31ROTT, color='pink', linestyle=":", label='Total Cricular Vel M31')
 plt.semilogy(Rarry, M33ROTT, color='pink', linestyle="-", label='Total Cricular Vel M33')
+
+#---HR cric
+plt.semilogy(Rarry, MWHRCV, color='brown', linestyle="-", label=' HernquistVCirc MW')
+plt.semilogy(Rarry, M31HRCV, color='brown', linestyle=":", label='HernquistVCirc M31')
+plt.semilogy(Rarry, M33HRCV, color='brown', linestyle="-", label='HernquistVCirc M33')
 
 #---titles~ things~
 plt.title('Milky Way Rotation Curve')
