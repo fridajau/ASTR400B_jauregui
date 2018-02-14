@@ -11,7 +11,7 @@ import astropy.units as u
 from ReadFile import Read
 from CenterofMass import CenterOfMass
 import matplotlib.pyplot as plt
-
+from astropy.constants import G
 
 
 #---Class
@@ -111,14 +111,14 @@ class MassProfile:
     """
     def CircularVelocity(self, pytpe, R):
         #---constants
-        G = G.to(u.kpc*u.km**2/u.s**2/u.Msun)
+        Gcos = G.to(u.kpc*u.km**2/u.s**2/u.Msun)
         #---like in mass enclosed follow the loop
         #---rotaion curves V = (G*M(<R)/R)^0.5
         #---loop over the radius
         Vel = np.zeros(np.size(R))
         num = 0
         for i in range(np.size(R)):
-            v      = sqrt(G*self.MassEnclosed(ptype,R)[num]/radii)
+            v      = np.sqrt(Gcos*self.MassEnclosed(ptype,R)[num]/radii)
             Vel[i] = v
             num    = num+1
             
@@ -144,7 +144,7 @@ class MassProfile:
 #---PLOTS
 
 #---plot using inclass lab as template
-figure = plt.figure()
+figure = plt.figure(1)
 ax = plt.subplot(111)
 
 #---radius array of 30 kpc
@@ -188,21 +188,35 @@ plt.title('Milky Way Mass Profile')
 plt.xlabel('From Center of Mass [kpc]')
 plt.ylabel('Mass Enclosed (Msun)')
 legend = ax.legend(loc='lower right')
-plt.show()
+
 
 #############rotation curve################
 #---plotting rotaion curve
 figure = plt.figure(2)
 a2x = plt.subplot(111)
 
-MWROT = MWP.CircularVelocity(1,Rarry)
-plt.semilogy(Rarry, MWROT, color='blue', linestyle="--", label='Halo Mass')
+MWROT  =  MWP.CircularVelocity(1,Rarry)
+M31ROT = M31P.CircularVelocity(1,Rarry)
+M33ROT = M33P.CircularVelocity(1,Rarry)
+
+plt.semilogy(Rarry, MWROT, color='blue', linestyle="--", label='Halo Mass for MW')
+plt.semilogy(Rarry, M31ROT, color='blue', linestyle=":", label='Halo Mass for M31')
+plt.semilogy(Rarry, M33ROT, color='blue', linestyle="-", label='Halo Mass for M33')
+
+#---titles~ things~
 plt.title('Milky Way Rotation Curve')
 plt.xlabel('From Center of Mass [kpc]')
 plt.ylabel('Mass Enclosed (Msun)')
 legend = ax.legend(loc='lower right')
 plt.show()
 
+#---notes
+"""
+I get an error from plotting the rotation curve
+ File "RotationCurve.py", line 121, in CircularVelocity
+    v= np.sqrt(Gcos*self.MassEnclosed(ptype,R)[num]/radii)
+    NameError: global name 'ptype' is not defined
+"""
 
 
 
