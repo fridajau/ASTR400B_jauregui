@@ -207,7 +207,7 @@ plt.semilogy(Rarry, M33ROT, color='blue', linestyle="-", label='Halo Mass for M3
 plt.title('Milky Way Rotation Curve')
 plt.xlabel('From Center of Mass [kpc]')
 plt.ylabel('Mass Enclosed (Msun)')
-legend = ax.legend(loc='lower right')
+legend2 = a2x.legend(loc='lower right')
 plt.show()
 
 #---notes
