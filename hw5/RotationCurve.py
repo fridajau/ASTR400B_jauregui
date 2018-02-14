@@ -11,7 +11,7 @@ import astropy.units as u
 from ReadFile import Read
 from CenterofMass import CenterOfMass
 import matplotlib.pyplot as plt
-from astropy.constants import G
+
 
 
 #---Class
@@ -64,7 +64,7 @@ class MassProfile:
         R2 = np.sqrt(x2**2 + y2**2 + z2**2)
         #---loop over the radius to define particles that are enclosed within the radius given
         for i in range(np.size(R)):
-            #---store masses with radii
+            #---store masses within radii
             index2  = np.where(R2 < R[i])
             mnew    = m2[index2]
             #---mass enclosed
@@ -156,19 +156,22 @@ M31P = MassProfile('M31', 00)
 M33P = MassProfile('M33', 00)
 
 #---halo, disk, bulge, and total of MW
-MWH = MWP.MassEnclosed(1,Rarry)
-MWD = MWP.MassEnclosed(2,Rarry)
-MWB = MWP.MassEnclosed(3,Rarry)
-MWT = MWP.MassEnclosedTotal(Rarry)
+MWH  = MWP.MassEnclosed(1,Rarry)
+M31H = M31P.MassEnclosed(1,Rarry)
+M33H = M33P.MassEnclosed(1,Rarry)
+MWD  = MWP.MassEnclosed(2,Rarry)
+MWB  = MWP.MassEnclosed(3,Rarry)
+MWT  = MWP.MassEnclosedTotal(Rarry)
 
 #print("MWH:", MWH)
 #print("MWD:", MWD)
 #print("MWB:", MWB)
 
 #---HR profile want to give total Halo Mass NOT massenc Galaxy Halo Mass
+#---had help from Drew about the a vaules, since I was running out of time
 MWHR  = MWP.HernquistMass(Rarry,  62, MWH)
-#M31HR = M31P.HernquistMass(Rarry, 62, MWH)
-#M33HR = M33P.HernquistMass(Rarry, 25, MWH[0])
+M31HR = M31P.HernquistMass(Rarry, 62, M31H)
+M33HR = M33P.HernquistMass(Rarry, 25, M33H)
 
 #---plotting halo, disk, bulge, total, and HR 
 plt.semilogy(Rarry, MWH,  color='blue',  label='Halo Mass')
@@ -176,11 +179,25 @@ plt.semilogy(Rarry, MWD,  color='red',   label='Disk Mass')
 plt.semilogy(Rarry, MWB,  color='green', label='Bulge Mass')
 plt.semilogy(Rarry, MWT,  color='yellow',label='Total Mass')
 
-plt.semilogy(Rarry, MWHR, color='black', label='Hernquist for MW a=62')
-#plt.semilogy(Rarry, MWHR, color='black', label='Hernquist for MW a=62')
+plt.semilogy(Rarry, MWHR, color='black', linestyle="--",label='Hernquist for MW a=62')
+plt.semilogy(Rarry, M31HR, color='black', linestyle=":",label='Hernquist for M31 a=62')
+plt.semilogy(Rarry, M33HR, color='black', linestyle="-",label='Hernquist for M33 a=25')
 
 #---titles~ things~
 plt.title('Milky Way Mass Profile')
+plt.xlabel('From Center of Mass [kpc]')
+plt.ylabel('Mass Enclosed (Msun)')
+legend = ax.legend(loc='lower right')
+plt.show()
+
+#############rotation curve################
+#---plotting rotaion curve
+figure = plt.figure(2)
+a2x = plt.subplot(111)
+
+MWROT = MWP.CircularVelocity(1,Rarry)
+plt.semilogy(Rarry, MWROT, color='blue', linestyle="--", label='Halo Mass')
+plt.title('Milky Way Rotation Curve')
 plt.xlabel('From Center of Mass [kpc]')
 plt.ylabel('Mass Enclosed (Msun)')
 legend = ax.legend(loc='lower right')
