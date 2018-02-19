@@ -55,6 +55,8 @@ def OrbitCOM(galaxy, start, end, n):
         #--first column in Orbit, store the time in Gyr(divide by 1000)
         #--row index of the Orbit array given as int(i)/n)
         #--quantities cant be stored in arrays divide out the units
+        #time       = float(float(COM.time/u.Myr)/1000)
+        #store_time = np.insert(Orbit,1,time, axis=0)
         Orbit[int(i/n),0] = float(COM.time/u.Myr)/1000
         
         #--store the COM pos and vel in the Orbit array, divide out the units
