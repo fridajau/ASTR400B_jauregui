@@ -14,6 +14,7 @@ import astropy.units as u
 from ReadFile import Read
 from CenterofMass import CenterOfMass
 import matplotlib.pyplot as plt
+import os, glob 
 #---create a symbolic link to the dir
 #ln -s /home/astr400b/VLowRes /home/fjauregui
 
@@ -46,8 +47,12 @@ def OrbitCOM(galaxy, start, end, n):
         ilbl = ilbl[-3:]
         filename = "%s_"%(galaxy) + ilbl + '.txt'
         
+        #--must add VLowRes txt files for 'VLowRes/' and filename
+        #os.chdir("/home/fjauregui/VLowRes/")
+        #filename2 = glob.glob("*.txt")
+        
         #--create a COM object using disk particles
-        COM   = CenterOfMass(filename, 2)
+        COM   = CenterOfMass('VLowRes/'+filename, 2)
         GCOMP = COM.COM_P(1.0, 2.0)
         GCOMV = COM.COM_V(GCOMP[0],GCOMP[1],GCOMP[2])
 
@@ -55,6 +60,8 @@ def OrbitCOM(galaxy, start, end, n):
         #--first column in Orbit, store the time in Gyr(divide by 1000)
         #--row index of the Orbit array given as int(i)/n)
         #--quantities cant be stored in arrays divide out the units
+        #time       = float(float(COM.time/u.Myr)/1000)
+        #store_time = np.insert(Orbit,1,time, axis=0)
         Orbit[int(i/n),0] = float(COM.time/u.Myr)/1000
         
         #--store the COM pos and vel in the Orbit array, divide out the units
@@ -72,8 +79,8 @@ def OrbitCOM(galaxy, start, end, n):
         #--print the counter for the loop to the screen to kno where the code at
         print(i)
         
-    #--rerun code for MW,M31,M33    
-    fileout = 'MW_lifetime.txt'
+    #--rerun code for MW,M31,M33 with changed delta and VolDec vaules   
+    fileout = 'MW_test2lifetime.txt'
     
     #--save the array Orbit to a file
     np.savetxt(fileout, Orbit, header='t, x, y, z, vx, vy, vz', comments='#',
@@ -82,23 +89,5 @@ def OrbitCOM(galaxy, start, end, n):
     return Orbit
 
 #--check code
-MW = OrbitCOM('MW',0,800,5)
+###MW = OrbitCOM('MW',0,800,5)
 
-"""    
-#---plots maybe in seperate python code
-#--compute the time, comp and comv for each galaxy from snap 0 to 800
-#--generate text files
-MW = np.genfromtxt('MW_lifetime.txt', dtype = float, names=True)
-
-###POS
-fig = plt.figure(figsize=(10,10))
-ax = plt.subplot(111)
-
-plt.xlabel('Time')
-plt.ylabel('X position')
-plt.plot(MW['t'], MW['x'], label='MW', color='red')
-plt.plot(M33['t'], M33['x'], label='M33', color='green')
-plt.plot(M31['t'], M31['x'], label='M31', color='blue')
-
-plt.show()
-"""
