@@ -1,0 +1,19 @@
+"""
+Frida Jauregui
+ASTR400b
+In class worksheet 1
+Jan 25, 2018
+"""
+from scipy.integrate import quad
+import numpy as np
+
+
+#---IMF
+def Salpeter(Z, SM, a):
+    SIMF = 1/Z*(SM)**(-a)
+    return SIMF
+
+Z = quad(lambda SM: Salpeter(1, SM, 2.35), 0.1, 120)
+print(Z)
+
+print(quad(lambda SM: Salpeter(Z, SM, 2.35), 1.0, 120))
