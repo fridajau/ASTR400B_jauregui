@@ -14,29 +14,28 @@ import matplotlib
 from ReadFile import Read
 from CenterofMass import CenterOfMass
 
-G = G.to(u.kpc*u.km**2/u.s**2/u.Msun)
-
 #--Class
 #---create a series of functions to determine the acceleration M33 feels from M31
 class M33AnalyticOrbit:
     def __init__(self, filename):
+        self.G = 4.498768e-6
         self.time, self.total, self.data = Read(filename)
         #--com pos.&vel. of M33 relative to M31 using disk particles for snapshot 0
-	self.x  = -98.0*u.kpc
-        self.y  = -120.0*u.kpc
-        self.z  = -127.0*u.kpc
-        self.vx = -29.0*(u.km/u.s)
-        self.vy = -174.0*(u.km/u.s)
+	self.x  = -98.0
+        self.y  = -120.0
+        self.z  = -127.0
+        self.vx = -29.0
+        self.vy = -174.0
         self.vz = 93.0*(u.km/u.s)
         #--use Hernquist scale length from assignment 5 and masses from assignment 3
-        self.rd    = 5*u.kpc
-        self.Mdisk = (0.12*10**12)*u.Msun
+        self.rd    = 5.0
+        self.Mdisk = 0.12e12
         
-        self.rbulge = 1.0*u.kpc
-        self.Mbulge = (0.019*10**12)*u.Msun
+        self.rbulge = 1.0
+        self.Mbulge = 0.019e12
         
-        self.rhalo = 62*u.kpc
-        self.Mhalo = (1.921*10**12)*u.Msun
+        self.rhalo = 62.0
+        self.Mhalo = 1.921e12
 
         
 #--Functions
@@ -50,12 +49,18 @@ class M33AnalyticOrbit:
    
         #--grav. accel. induced by a hernquist profile
         r  = np.sqrt(x**2 + y**2 + z**2)
-        ax = -G*M*x/((r(ra + r))**2)
-        ay = -G*M*y/((r(ra + r))**2)
-        az = -G*M*z/((r(ra + r))**2)
+        #ax = -G*M*x/((r(ra + r))**2)
+        #ay = -G*M*y/((r(ra + r))**2)
+        #az = -G*M*z/((r(ra + r))**2)
         #--set a dummy variable that indicates if x, y, or z
-        ddv = '%s_'%(x,y,z)
-        ah  = -G*M*ddv/((r(ra + r))**2)
+        if ddv =='x':
+            av = x
+        if ddv =='y':
+            av = y
+        if ddv =='z':
+            av = z
+
+        ah  = -self.G*M*av/((r(ra + r))**2)
         return ah
 
     
@@ -66,8 +71,8 @@ class M33AnalyticOrbit:
 #------ av is a dummy varrible that indicates which comp. of the accel.
 #Output:returns accel. in the direction of the input of the dummy varible
     
-        #--define zd    
-        zd = (self.rd)/5.0
+        #--define zd   
+        zd = rd/5.0
         #--varibles from Miyamoto-Nagai 1975 profile
         R  = np.sqrt(x**2 + y**2)
         B  = rd + np.sqrt(z**2 + zd**2)
@@ -77,21 +82,23 @@ class M33AnalyticOrbit:
         #--accel. in the z direction is different
         adz = -G*M*B*z/((((R**2 + B**2)**1.5)*(z**2 + zd**2)**0.5))
         #--dummy variable
-        ddv = '%s_'%(x,y,z)
-        am = (-G*M*ddv/(R**2 + B**2)**1.5)
-        if (ddv == z):
+        if ddv =='x':
+            am = adx
+        if ddv =='y':
+            am = ady
+        if ddv =='z':
             am = adz
         return am
     
 
-    def M31Accel(x,y,z, ddv):
+    def M31Accel(self, x,y,z, ddv):
 #Input: x,y,z coord. of the gravitaional accel.
 #------ ddv is a dummy varrible that indicates which comp. of the accel.
 #Output:sums all acceleration terms from each galaxy component (disk,bluge,halo)
         
-        haloaccel = self.HenquistAccel(1.921*10**12, 62, x,y,z, ddv)
-        bulgaccel = self.HenquistAccel(0.019*10**12, 62, x,y,z, ddv)
-        diskaccel = self.MiyamotoNagaiAccel(0.12*10**12, 62, x,y,z, ddv)
+        haloaccel = self.HenquistAccel(1.921e12, 62, x,y,z, ddv)
+        bulgaccel = self.HenquistAccel(0.019e12, 62, x,y,z, ddv)
+        diskaccel = self.MiyamotoNagaiAccel(0.12e12, 62, x,y,z, ddv)
         allaccels = haloaccel + bulgeaccel + diskaccel
         return allacccels
 
@@ -100,23 +107,26 @@ class M33AnalyticOrbit:
 #Input: dt is a time interval for integration
 #------ x,y,z is a starting potential for the M33 COM pos.
 #------ starting potential for the M33 COM vel.
-#Output:equation of motion
+#Output:array of pos&vel
 
         #--bulid an integrator
-        ddv = '%s_'%(x,y,z)
-        an = self.M31Accel(x,y,z,ddv)
-        x = x + (dt/2)*vx
-        y = y + (dt/2)*vy
-        z = z + (dt/2)*vz
-        
-        vx = vx + an*dt
-        vy = vy + an*dt
-        vz = vz + an*dt
+        xn = x + (dt/2)*vx
+        yn = y + (dt/2)*vy
+        zn = z + (dt/2)*vz
 
-        rx = x + 0.5*(vx + vx)*dt
-        ry = y + 0.5*(vy + vy)*dt
-        rz = z + 0.5*(vz + vz)*dt
-        return vx,vy,vz, rx,ry,rz
+        
+        M31anx = self.M31Accel(xn,yn,zn,'x')
+        M31any = self.M31Accel(xn,yn,zn,'y')
+        M31anz = self.M31Accel(xn,yn,zn,'z')
+        
+        vxn = vx +  M31anx*dt
+        vyn = vy +  M31any*dt
+        vzn = vz +  M31anz*dt
+
+        rx = x + 0.5*(vx + vxn)*dt
+        ry = y + 0.5*(vy + vyn)*dt
+        rz = z + 0.5*(vz + vzn)*dt
+        return rx,ry,rz, vxn,vyn,vzn
 
     
     def OrbitIntegrator(self, t0, dt, tmax):
@@ -136,9 +146,9 @@ class M33AnalyticOrbit:
         vz = self.vz
 
         #--initialize the array
-        a = int(tmax/dt)+1
+        a = int((tmax)/dt)+1
         OrbitM33 = np.zeros((a,7))  
-        t  = t0
+        t0  = 0
         #--while loop over leapfrog
         while(t < tmax):
             vx,vy,vz,x,y,z = self.LeapFrog(dt, x,y,z, vx,vy,vz)
