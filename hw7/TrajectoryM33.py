@@ -26,7 +26,7 @@ class M33AnalyticOrbit:
         self.z  = -127.0
         self.vx = -29.0
         self.vy = -174.0
-        self.vz = 93.0*(u.km/u.s)
+        self.vz = 93.0
         #--use Hernquist scale length from assignment 5 and masses from assignment 3
         self.rd    = 5.0
         self.Mdisk = 0.12e12
@@ -114,7 +114,6 @@ class M33AnalyticOrbit:
         yn = y + (dt/2)*vy
         zn = z + (dt/2)*vz
 
-        
         M31anx = self.M31Accel(xn,yn,zn,'x')
         M31any = self.M31Accel(xn,yn,zn,'y')
         M31anz = self.M31Accel(xn,yn,zn,'z')
@@ -150,10 +149,10 @@ class M33AnalyticOrbit:
         OrbitM33 = np.zeros((a,7))  
         t0  = 0
         #--while loop over leapfrog
-        while(t < tmax):
+        while(t0 < tmax):
             vx,vy,vz,x,y,z = self.LeapFrog(dt, x,y,z, vx,vy,vz)
 
-            OrbitM33[int(tmax/dt),0] = t/u.Myr/1000
+            OrbitM33[int(tmax/dt),0] = 0
             OrbitM33[int(tmax/dt),1] = x
             OrbitM33[int(tmax/dt),2] = y
             OrbitM33[int(tmax/dt),3] = z
@@ -161,8 +160,8 @@ class M33AnalyticOrbit:
             OrbitM33[int(tmax/dt),5] = vy
             OrbitM33[int(tmax/dt),6] = vz
 
-        np.savetxt(fileout, OrbitM33, header='t   x    y    z   vx   vy   vz', comments='# ',
-                fmt=['%.2f', '%.2f','%.2f','%.2f','%.2f','%.2f','%.2f'])
+        np.savetxt('M33Trajectory', OrbitM33, header='t   x    y    z   vx   vy   vz',
+                   comments='# ', fmt=['%.2f', '%.2f','%.2f','%.2f','%.2f','%.2f','%.2f'])
 
 print("trying out code")
 M33 =  M33AnalyticOrbit('M33_000.txt')
