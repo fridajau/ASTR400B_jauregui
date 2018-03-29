@@ -19,14 +19,14 @@ class M33AnalyticOrbit:
     def __init__(self, filename):
         #--G constant in kpc^3/Gyr^2/Msun
         self.G = 4.498768e-6
-        #self.time, self.total, self.data = Read(filename)
+        ###self.time, self.total, self.data = Read(filename)
         self.outfile = filename
         #--com pos.&vel. of M33 relative to M31 using disk particles for snapshot 0
 	self.x  = -98.0
         self.y  = -120.0
         self.z  = -127.0
         self.vx = -29.0
-        self.vy = -174.0
+        self.vy = 174.0
         self.vz = 93.0
         #--use Hernquist scale length from assignment 5 and masses from assignment 3
         self.rd    = 5.0
@@ -50,9 +50,9 @@ class M33AnalyticOrbit:
    
         #--grav. accel. induced by a hernquist profile
         r  = np.sqrt(x**2 + y**2 + z**2)
-        #ax = -G*M*x/((r(ra + r))**2)
-        #ay = -G*M*y/((r(ra + r))**2)
-        #az = -G*M*z/((r(ra + r))**2)
+        ###ax = -G*M*x/((r(ra + r))**2)
+        ###ay = -G*M*y/((r(ra + r))**2)
+        ###az = -G*M*z/((r(ra + r))**2)
         #--set a dummy variable that indicates if x, y, or z
         if ddv =='x':
             av = x
@@ -133,11 +133,7 @@ class M33AnalyticOrbit:
 #------ dt a time interval
 #------ tmax final time
 #Output:array of of motion
-        
-        #--initialize the array
-        a = int((tmax)/dt)+1
-        OrbitM33 = np.zeros((a,7))
-        
+
         #--supply starting COM pos&vel of M33 realtive to M31
         x = self.x
         y = self.y
@@ -146,7 +142,12 @@ class M33AnalyticOrbit:
         vx = self.vx
         vy = self.vy
         vz = self.vz
-  
+
+                
+        #--initialize the array
+        a = int((tmax)/dt)+1
+        OrbitM33 = np.zeros((a,7))
+
         t = t0
         #--while loop over leapfrog
         while t < tmax:
@@ -159,7 +160,7 @@ class M33AnalyticOrbit:
             OrbitM33[int(t/dt),6] = vz
             
             #--new pos&vel
-            x,y,z,vx,vy,vz = self.LeapFrog(dt, x,y,z, vx,vy,vz)
+            x,y,z,vx,vy,vz = self.LeapFrog(dt, x, y, z, vx, vy, vz)
             #--updating time
             t = t+dt
 
@@ -170,12 +171,52 @@ class M33AnalyticOrbit:
 M33ana  = M33AnalyticOrbit('TrajectoryM33.txt')
 intM33  = M33ana.OrbitIntegrator(0,0.1,10)
 
-"""
 #--reading m31 and m33 orbit files from hw6
 M31 = np.genfromtxt('M31_lifetime.txt',dtype=None,names=True)
 M33 = np.genfromtxt('M33_lifetime.txt',dtype=None,names=True)
-OrbitfileM33 = np.genfromtxt('TrajectoryM33.txt',dtype=None,names=True)
+M33_trajectory = np.genfromtxt('TrajectoryM33.txt',dtype=None,names=True)
 
-#--M33 from integrator
-#POS = np.sqrt()
-"""
+#--plot POS&VEL of M33 relative to M31
+time = M33_trajectory['t'] 
+POS = np.sqrt(M33_trajectory['x']**2 + M33_trajectory['y']**2 + M33_trajectory['z']**2)
+M31time = M31['t']
+xsep = abs(M31['x'] - M33['x'])
+ysep = abs(M31['y'] - M33['y'])
+zsep = abs(M31['z'] - M33['z'])
+mag  = np.sqrt(xsep**2 + ysep**2 + zsep**2)
+
+fig = plt.figure(figsize=(10,10))
+ax = plt.subplot(111)
+plt.plot(time,POS,label='Analytic')
+plt.plot(M31time,mag,label='Simulation')
+plt.xlabel('Time (Gyr)', fontsize=22)
+plt.ylabel('Separation (kpc)', fontsize=22)
+plt.title('M31 and M33 Separation', fontsize=22)
+plt.legend()
+
+
+VEL = np.sqrt(M33_trajectory['vx']**2 + M33_trajectory['vy']**2 + M33_trajectory['vz']**2)
+vxsep = abs(M31['vx'] - M33['vx'])
+vysep = abs(M31['vy'] - M33['vy'])
+vzsep = abs(M31['vz'] - M33['vz'])
+mag2  = np.sqrt(xsep**2 + ysep**2 + zsep**2)
+
+fig = plt.figure(figsize=(10,10))
+ax = plt.subplot(111)
+plt.plot(time,VEL,label='Analytic')
+plt.plot(M31time,mag2,label='Simulation')
+plt.xlabel('Time (Gyr)', fontsize=22)
+plt.ylabel('Separation (km/s)', fontsize=22)
+plt.title('M31 and M33 Velocity', fontsize=22)
+plt.legend()
+plt.show()
+
+#---problems
+print("question 1:")
+print("")
+
+print("question 2:")
+print("")
+
+
+
