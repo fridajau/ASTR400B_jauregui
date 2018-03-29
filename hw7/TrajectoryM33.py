@@ -167,8 +167,8 @@ class M33AnalyticOrbit:
             #--updating time
             t = t+dt
 
-        np.savetxt('TrajectoryM33.txt', OrbitM33, header='t   x    y    z   vx   vy   vz',
-                   comments='# ', fmt=['%.2f', '%.2f','%.2f','%.2f','%.2f','%.2f','%.2f'])
+        #np.savetxt('TrajectoryM33.txt', OrbitM33, header='t   x    y    z   vx   vy   vz',
+                   #comments='# ', fmt=['%.2f', '%.2f','%.2f','%.2f','%.2f','%.2f','%.2f'])
         
 #---plots
 M33ana  = M33AnalyticOrbit('TrajectoryM33.txt')
@@ -196,6 +196,7 @@ plt.xlabel('Time (Gyr)', fontsize=22)
 plt.ylabel('Separation (kpc)', fontsize=22)
 plt.title('M31 and M33 Separation', fontsize=22)
 plt.legend()
+plt.savefig('M31_M33anapos.png', rasterized=True, dpi=350)
 
 
 VEL = np.sqrt(M33_trajectory['vx']**2 + M33_trajectory['vy']**2 + M33_trajectory['vz']**2)
@@ -212,11 +213,12 @@ plt.xlabel('Time (Gyr)', fontsize=22)
 plt.ylabel('Separation (km/s)', fontsize=22)
 plt.title('M31 and M33 Velocity', fontsize=22)
 plt.legend()
+plt.savefig('M31_M33anavel.png', rasterized=True, dpi=350)
 plt.show()
 
 #---problems
 print("question 1:")
-print("So far, I have zeros in my data set and my graphs are all wrong. I can see however before its first encounter, the plots follow the same points, before diverging/changing.")
+print("I can see before its first encounter, the plots follow the same points, before diverging/changing.")
 print("")
 print("question 2:")
 print("What's missing the are the tidal stripping effects M33 goes through when it passes through M31")
