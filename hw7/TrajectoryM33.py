@@ -53,6 +53,7 @@ class M33AnalyticOrbit:
         ###ax = -G*M*x/((r(ra + r))**2)
         ###ay = -G*M*y/((r(ra + r))**2)
         ###az = -G*M*z/((r(ra + r))**2)
+        dom = r*(ra+r)**2
         #--set a dummy variable that indicates if x, y, or z
         if ddv =='x':
             av = x
@@ -60,7 +61,7 @@ class M33AnalyticOrbit:
             av = y
         if ddv =='z':
             av = z
-        ah  = -self.G*M*av/((r*(ra + r))**2)
+        ah  = -self.G*M*av/dom
         return ah
 
     
@@ -80,7 +81,9 @@ class M33AnalyticOrbit:
         adx = -self.G*M*x/((R**2 + B**2)**1.5)
         ady = -self.G*M*y/((R**2 + B**2)**1.5)
         #--accel. in the z direction is different
-        adz = -self.G*M*B*z/((((R**2 + B**2)**1.5)*(z**2 + zd**2)**0.5))
+        RBdom = (R**2 + B**2)**(1.5)
+        Zdom  = np.sqrt(z**2 + zd**2)
+        adz = (-self.G*M*B*z)/(RBdom*Zdom)
         #--dummy variable
         if ddv =='x':
             am = adx
