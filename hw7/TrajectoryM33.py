@@ -7,7 +7,6 @@ use the COM file for M31 and M33 from hw6
 
 import numpy as np
 import astropy.units as u
-from astropy.constants import G
 import matplotlib.pyplot as plt
 import matplotlib
 
@@ -18,8 +17,10 @@ from CenterofMass import CenterOfMass
 #---create a series of functions to determine the acceleration M33 feels from M31
 class M33AnalyticOrbit:
     def __init__(self, filename):
+        #--G constant in kpc^3/Gyr^2/Msun
         self.G = 4.498768e-6
-        self.time, self.total, self.data = Read(filename)
+        #self.time, self.total, self.data = Read(filename)
+        self.outfile = filename
         #--com pos.&vel. of M33 relative to M31 using disk particles for snapshot 0
 	self.x  = -98.0
         self.y  = -120.0
@@ -59,8 +60,7 @@ class M33AnalyticOrbit:
             av = y
         if ddv =='z':
             av = z
-
-        ah  = -self.G*M*av/((r(ra + r))**2)
+        ah  = -self.G*M*av/((r*(ra + r))**2)
         return ah
 
     
@@ -72,15 +72,15 @@ class M33AnalyticOrbit:
 #Output:returns accel. in the direction of the input of the dummy varible
     
         #--define zd   
-        zd = rd/5.0
+        zd = self.rd/5.0
         #--varibles from Miyamoto-Nagai 1975 profile
         R  = np.sqrt(x**2 + y**2)
-        B  = rd + np.sqrt(z**2 + zd**2)
+        B  = self.rd + np.sqrt(z**2 + zd**2)
 
-        adx = -G*M*x/((R**2 + B**2)**1.5)
-        ady = -G*M*y/((R**2 + B**2)**1.5)
+        adx = -self.G*M*x/((R**2 + B**2)**1.5)
+        ady = -self.G*M*y/((R**2 + B**2)**1.5)
         #--accel. in the z direction is different
-        adz = -G*M*B*z/((((R**2 + B**2)**1.5)*(z**2 + zd**2)**0.5))
+        adz = -self.G*M*B*z/((((R**2 + B**2)**1.5)*(z**2 + zd**2)**0.5))
         #--dummy variable
         if ddv =='x':
             am = adx
@@ -96,11 +96,11 @@ class M33AnalyticOrbit:
 #------ ddv is a dummy varrible that indicates which comp. of the accel.
 #Output:sums all acceleration terms from each galaxy component (disk,bluge,halo)
         
-        haloaccel = self.HenquistAccel(1.921e12, 62, x,y,z, ddv)
-        bulgaccel = self.HenquistAccel(0.019e12, 62, x,y,z, ddv)
-        diskaccel = self.MiyamotoNagaiAccel(0.12e12, 62, x,y,z, ddv)
-        allaccels = haloaccel + bulgeaccel + diskaccel
-        return allacccels
+        haloaccel  = self.HenquistAccel(self.Mhalo, self.rd, x,y,z, ddv)
+        bulgeaccel = self.HenquistAccel(self.Mbulge, self.rbulge, x,y,z, ddv)
+        diskaccel  = self.MiyamotoNagaiAccel(self.Mdisk, self.rhalo, x,y,z, ddv)
+        allaccels  = haloaccel + bulgeaccel + diskaccel
+        return allaccels
 
     
     def LeapFrog(self, dt, x,y,z, vx,vy,vz):
@@ -133,8 +133,11 @@ class M33AnalyticOrbit:
 #------ dt a time interval
 #------ tmax final time
 #Output:array of of motion
-
-        fileout = 'TrajectoryM33.txt'
+        
+        #--initialize the array
+        a = int((tmax)/dt)+1
+        OrbitM33 = np.zeros((a,7))
+        
         #--supply starting COM pos&vel of M33 realtive to M31
         x = self.x
         y = self.y
@@ -143,26 +146,36 @@ class M33AnalyticOrbit:
         vx = self.vx
         vy = self.vy
         vz = self.vz
-
-        #--initialize the array
-        a = int((tmax)/dt)+1
-        OrbitM33 = np.zeros((a,7))  
-        t0  = 0
+  
+        t = t0
         #--while loop over leapfrog
-        while(t0 < tmax):
-            vx,vy,vz,x,y,z = self.LeapFrog(dt, x,y,z, vx,vy,vz)
+        while t < tmax:
+            OrbitM33[int(t/dt),0] = t
+            OrbitM33[int(t/dt),1] = x
+            OrbitM33[int(t/dt),2] = y
+            OrbitM33[int(t/dt),3] = z
+            OrbitM33[int(t/dt),4] = vx
+            OrbitM33[int(t/dt),5] = vy
+            OrbitM33[int(t/dt),6] = vz
+            
+            #--new pos&vel
+            x,y,z,vx,vy,vz = self.LeapFrog(dt, x,y,z, vx,vy,vz)
+            #--updating time
+            t = t+dt
 
-            OrbitM33[int(tmax/dt),0] = 0
-            OrbitM33[int(tmax/dt),1] = x
-            OrbitM33[int(tmax/dt),2] = y
-            OrbitM33[int(tmax/dt),3] = z
-            OrbitM33[int(tmax/dt),4] = vx
-            OrbitM33[int(tmax/dt),5] = vy
-            OrbitM33[int(tmax/dt),6] = vz
-
-        np.savetxt('M33Trajectory', OrbitM33, header='t   x    y    z   vx   vy   vz',
+        np.savetxt('TrajectoryM33.txt', OrbitM33, header='t   x    y    z   vx   vy   vz',
                    comments='# ', fmt=['%.2f', '%.2f','%.2f','%.2f','%.2f','%.2f','%.2f'])
+        
+#---plots
+M33ana  = M33AnalyticOrbit('TrajectoryM33.txt')
+intM33  = M33ana.OrbitIntegrator(0,0.1,10)
 
-print("trying out code")
-M33 =  M33AnalyticOrbit('M33_000.txt')
-om33 = M33.OrbitIntegrator(0,0.5,10)
+"""
+#--reading m31 and m33 orbit files from hw6
+M31 = np.genfromtxt('M31_lifetime.txt',dtype=None,names=True)
+M33 = np.genfromtxt('M33_lifetime.txt',dtype=None,names=True)
+OrbitfileM33 = np.genfromtxt('TrajectoryM33.txt',dtype=None,names=True)
+
+#--M33 from integrator
+#POS = np.sqrt()
+"""
