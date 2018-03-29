@@ -183,9 +183,9 @@ M33_trajectory = np.genfromtxt('TrajectoryM33.txt',dtype=None,names=True)
 time = M33_trajectory['t'] 
 POS = np.sqrt(M33_trajectory['x']**2 + M33_trajectory['y']**2 + M33_trajectory['z']**2)
 M31time = M31['t']
-xsep = abs(M31['x'] - M33['x'])
-ysep = abs(M31['y'] - M33['y'])
-zsep = abs(M31['z'] - M33['z'])
+xsep = (M31['x'] - M33['x'])
+ysep = (M31['y'] - M33['y'])
+zsep = (M31['z'] - M33['z'])
 mag  = np.sqrt(xsep**2 + ysep**2 + zsep**2)
 
 fig = plt.figure(figsize=(10,10))
@@ -199,9 +199,9 @@ plt.legend()
 
 
 VEL = np.sqrt(M33_trajectory['vx']**2 + M33_trajectory['vy']**2 + M33_trajectory['vz']**2)
-vxsep = abs(M31['vx'] - M33['vx'])
-vysep = abs(M31['vy'] - M33['vy'])
-vzsep = abs(M31['vz'] - M33['vz'])
+vxsep = (M31['vx'] - M33['vx'])
+vysep = (M31['vy'] - M33['vy'])
+vzsep = (M31['vz'] - M33['vz'])
 mag2  = np.sqrt(xsep**2 + ysep**2 + zsep**2)
 
 fig = plt.figure(figsize=(10,10))
@@ -216,10 +216,13 @@ plt.show()
 
 #---problems
 print("question 1:")
+print("So far, I have zeros in my data set and my graphs are all wrong")
 print("")
-
 print("question 2:")
+print("What's missing the are the tidal stripping effects M33 goes through when it passes through M31")
 print("")
+print("question 3:")
+print("To add the effects MW might have a similar approach might be needed, like with M33ana, consider MW as point mass.")
 
 
 
