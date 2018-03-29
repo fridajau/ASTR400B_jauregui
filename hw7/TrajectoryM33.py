@@ -202,7 +202,7 @@ VEL = np.sqrt(M33_trajectory['vx']**2 + M33_trajectory['vy']**2 + M33_trajectory
 vxsep = (M31['vx'] - M33['vx'])
 vysep = (M31['vy'] - M33['vy'])
 vzsep = (M31['vz'] - M33['vz'])
-mag2  = np.sqrt(xsep**2 + ysep**2 + zsep**2)
+mag2  = np.sqrt(vxsep**2 + vysep**2 + vzsep**2)
 
 fig = plt.figure(figsize=(10,10))
 ax = plt.subplot(111)
@@ -216,7 +216,7 @@ plt.show()
 
 #---problems
 print("question 1:")
-print("So far, I have zeros in my data set and my graphs are all wrong")
+print("So far, I have zeros in my data set and my graphs are all wrong. I can see however before its first encounter, the plots follow the same points, before diverging/changing.")
 print("")
 print("question 2:")
 print("What's missing the are the tidal stripping effects M33 goes through when it passes through M31")
