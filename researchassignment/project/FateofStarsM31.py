@@ -45,8 +45,27 @@ class SolarParticles:
         MW  = np.genfromtxt('MW_Orbit.txt', dtype = float, names=True)
         M31 = np.genfromtxt('M31_Orbit.txt', dtype = float, names=True)
 
+        #--select particles from m31
+        tm31 = M31['t']
+        xm31 = M31['x']
+        ym31 = M31['y']
+        zm31 = M31['z']
+
+        vxm31 = M31['vx']
+        vym31 = M31['vy']
+        vzm31 = M31['vz']
+
         #--radial position from galatic center
-        R = np.sqrt(x**2 + y**2)
+        R = np.sqrt(xm31**2 + ym31**2)
         
-        self.Rindex = np.where()
+        Rindex = np.where((R > 7) & (R < 9))
+        x2m31 = xm31[Rindex]
+        y2m31 = ym31[Rindex]
+        z2m31 = zm31[Rindex]
+
+        vx2m31 = vxm31[Rindex]
+        vy2m31 = vym31[Rindex]
+        vz2m31 = vzm31[Rindex]
+
+        
         
