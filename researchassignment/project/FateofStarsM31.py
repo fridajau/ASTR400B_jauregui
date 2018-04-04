@@ -59,9 +59,11 @@ class SolarParticles:
         R = np.sqrt(xm31**2 + ym31**2)
         
         Rindex = np.where((R > 7) & (R < 9))
+        Zindex = np.where((zm31 > -1.5) & (zm31 < 1.5))
         x2m31 = xm31[Rindex]
         y2m31 = ym31[Rindex]
         z2m31 = zm31[Rindex]
+        z3m31 = z2m31[Zindex]
 
         vx2m31 = vxm31[Rindex]
         vy2m31 = vym31[Rindex]
