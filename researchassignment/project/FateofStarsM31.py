@@ -43,44 +43,31 @@ class SolarParticles:
         
         M31 = np.genfromtxt('M31_Orbit.txt', dtype=float, names=True)
 
-        #--create a COM obeject for M31 relative to MW using Disk Particles from CenterOfMass
+        #--create a COM obeject for M31 using Disk Particles from CenterOfMass
         COM_M31 = CenterOfMass("M31_000.txt",2)
-        COM_MW  = CenterOfMass("MW_000.txt",2)
         M31_pos = COM_M31.COM_P(1.0,4.0)
         M31_vel = COM_M31.COM_V(M31_pos[0],M31_pos[1],M31_pos[2])
-        MW_pos  = COM_MW.COM_P(1.0,2.0)
-        M31_MWx = (M31_pos[0]-MW_pos[0])
-        M31_MWy = (M31_pos[1]-MW_pos[1])  
-        M31_MWz = (M31_pos[2]-MW_pos[2])
 
-        #--x,y,z pos & vel of m31 rel to mw
-        COMX = -377.0 #kpc
-        COMY = 608.0  #kpc
-        COMZ = -284.0 #kpc
-        COMVX = 72.0  #km/s
-        COMVY = -76.0 #km/s
-        COMVZ = 50.0  #km/s
+        #--x,y,z pos & vel of m31 rel to COM
+        COMX = COM_M31.x - float(M31_pos[0]/u.kpc)
+        COMY = COM_M31.y - float(M31_pos[1]/u.kpc)
+        COMZ = COM_M31.z - float(M31_pos[2]/u.kpc)
 
-        #--change the frame of reference
-        COMX2 = M31['x'] - float(M31_MWx/u.kpc)
-        COMY2 = M31['y'] - float(M31_MWy/u.kpc)
-        COMZ2 = M31['z'] - float(M31_MWz/u.kpc)
-                             
         #--3d radial position from galatic center
-        RadPos = np.sqrt(COMX2**2 + COMY2**2)
-       
+        RadPos = np.sqrt(COMX**2 + COMY**2 + COMZ**2)
+
         #--index the vaules within 7-9 kpc
         Rindex = np.where((RadPos > 7) & (RadPos < 9))
         ###Zindex = np.where((zm31 > -1.5) & (zm31 < 1.5))
-        nM31x = COMX2[Rindex]
-        nM31y = COMY2[Rindex]
-        nM31z = COMZ2[Rindex]
+        nM31x = COMX[Rindex]
+        nM31y = COMY[Rindex]
+        nM31z = COMZ[Rindex]
         ###z3m31 = z2m31[Zindex]
                 
         #--particals within the new radius    
-        RadPos2 = np.sqrt(nM31x**2 + nM31y**2)
+        RadPos2 = np.sqrt(nM31x**2 + nM31y**2 + nM31z**2)
 
-        return RadPos2
+        return RadPos
 
     
 
