@@ -53,6 +53,7 @@ class SolarParticles:
         vym31 = M31['vy']
         vzm31 = M31['vz']
 
+<<<<<<< HEAD
         #--create a COM obeject M31 relative to MW using Disk Particles from CenterofMass
         COMX = -377.0 #kpc
         COMY = 608.0  #kpc
@@ -76,6 +77,17 @@ class SolarParticles:
         RadPos2 = np.sqrt(x2m31**2 + y2m31**2)
 
         return RadPos
+=======
+        #--radial position from galatic center
+        R = np.sqrt(xm31**2 + ym31**2)
+        
+        Rindex = np.where((R > 7) & (R < 9))
+        Zindex = np.where((zm31 > -1.5) & (zm31 < 1.5))
+        x2m31 = xm31[Rindex]
+        y2m31 = ym31[Rindex]
+        z2m31 = zm31[Rindex]
+        z3m31 = z2m31[Zindex]
+>>>>>>> bac39743665b21d56575c65fbe817917f51868ab
 
     
 
