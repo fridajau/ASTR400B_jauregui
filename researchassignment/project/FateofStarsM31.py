@@ -67,7 +67,7 @@ class SolarParticles:
         #--particals within the new radius    
         RadPos2 = np.sqrt(nM31x**2 + nM31y**2 + nM31z**2)
 
-        return RadPos
+        return RadPos2
 
     
 
