@@ -34,7 +34,7 @@ class SolarParticles:
 #--Create a histogram to see the radial distribution with repect to M31's galatic center of solar particles
 
     def RadialPos(self, x,y,z, center):
-        #INPUT:   
+        #INPUT: x,y,z positions, center of galaxy=0  
         #RETURNS: 3d coord of pcom or vcom of particals within 7-9 kpc
 
         #--Use Orbits txt to obtain the COM of x,y,z vx,xy,vz of M31
@@ -43,18 +43,17 @@ class SolarParticles:
         
         M31 = np.genfromtxt('M31_Orbit.txt', dtype=float, names=True)
 
-        #--M31 vaules
-        tm31 = M31['t']
-        xm31 = M31['x']
-        ym31 = M31['y']
-        zm31 = M31['z']
+        #--create a COM obeject for M31 relative to MW using Disk Particles from CenterOfMass
+        COM_M31 = CenterOfMass("M31_000.txt",2)
+        COM_MW  = CenterOfMass("MW_000.txt",2)
+        M31_pos = COM_M31.COM_P(1.0,4.0)
+        M31_vel = COM_M31.COM_V(M31_pos[0],M31_pos[1],M31_pos[2])
+        MW_pos  = COM_MW.COM_P(1.0,2.0)
+        M31_MWx = (M31_pos[0]-MW_pos[0])
+        M31_MWy = (M31_pos[1]-MW_pos[1])  
+        M31_MWz = (M31_pos[2]-MW_pos[2])
 
-        vxm31 = M31['vx']
-        vym31 = M31['vy']
-        vzm31 = M31['vz']
-
-<<<<<<< HEAD
-        #--create a COM obeject M31 relative to MW using Disk Particles from CenterofMass
+        #--x,y,z pos & vel of m31 rel to mw
         COMX = -377.0 #kpc
         COMY = 608.0  #kpc
         COMZ = -284.0 #kpc
@@ -62,32 +61,26 @@ class SolarParticles:
         COMVY = -76.0 #km/s
         COMVZ = 50.0  #km/s
 
+        #--change the frame of reference
+        COMX2 = M31['x'] - float(M31_MWx/u.kpc)
+        COMY2 = M31['y'] - float(M31_MWy/u.kpc)
+        COMZ2 = M31['z'] - float(M31_MWz/u.kpc)
+                             
         #--3d radial position from galatic center
-        RadPos = np.sqrt(xm31**2 + ym31**2)
+        RadPos = np.sqrt(COMX2**2 + COMY2**2)
        
         #--index the vaules within 7-9 kpc
         Rindex = np.where((RadPos > 7) & (RadPos < 9))
         ###Zindex = np.where((zm31 > -1.5) & (zm31 < 1.5))
-        x2m31 = xm31[Rindex]
-        y2m31 = ym31[Rindex]
-        z2m31 = zm31[Rindex]
+        nM31x = COMX2[Rindex]
+        nM31y = COMY2[Rindex]
+        nM31z = COMZ2[Rindex]
         ###z3m31 = z2m31[Zindex]
                 
         #--particals within the new radius    
-        RadPos2 = np.sqrt(x2m31**2 + y2m31**2)
+        RadPos2 = np.sqrt(nM31x**2 + nM31y**2)
 
-        return RadPos
-=======
-        #--radial position from galatic center
-        R = np.sqrt(xm31**2 + ym31**2)
-        
-        Rindex = np.where((R > 7) & (R < 9))
-        Zindex = np.where((zm31 > -1.5) & (zm31 < 1.5))
-        x2m31 = xm31[Rindex]
-        y2m31 = ym31[Rindex]
-        z2m31 = zm31[Rindex]
-        z3m31 = z2m31[Zindex]
->>>>>>> bac39743665b21d56575c65fbe817917f51868ab
+        return RadPos2
 
     
 
