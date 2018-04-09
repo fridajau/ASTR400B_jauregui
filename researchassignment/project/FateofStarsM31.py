@@ -1,5 +1,7 @@
 import numpy as np
 import astropy.units as u
+import matplotlib
+from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 from ReadFile import Read
 from CenterofMass import CenterOfMass
@@ -40,8 +42,6 @@ class SolarParticles:
         #--Use Orbits txt to obtain the COM of x,y,z vx,xy,vz of M31
         #--snap shots to look out for (0.0, 3.87, 5.87, 6.2, 10.0)
         #--index M31 vaules and return an array with the desired particles
-        
-        M31 = np.genfromtxt('M31_Orbit.txt', dtype=float, names=True)
 
         #--create a COM obeject for M31 using Disk Particles from CenterOfMass
         COM_M31 = CenterOfMass("M31_000.txt",2)
@@ -54,7 +54,7 @@ class SolarParticles:
         COMZ = COM_M31.z - float(M31_pos[2]/u.kpc)
 
         #--3d radial position from galatic center
-        RadPos = np.sqrt(COMX**2 + COMY**2 + COMZ**2)
+        RadPos = np.sqrt(COMX**2 + COMY**2)
 
         #--index the vaules within 7-9 kpc
         Rindex = np.where((RadPos > 7) & (RadPos < 9))
@@ -65,14 +65,65 @@ class SolarParticles:
         ###z3m31 = z2m31[Zindex]
                 
         #--particals within the new radius    
-        RadPos2 = np.sqrt(nM31x**2 + nM31y**2 + nM31z**2)
+        RadPos2 = np.sqrt(nM31x**2 + nM31y**2)
 
         return RadPos2
+    
+#--plot the ring of particles to see if the code works so far    
+SunCand = SolarParticles("M31_000.txt", 2)
+SunPart = SunCand.RadialPos(-377,608,-284, 0)
+print(SunPart)
+
+#######USING LAB7 TO CHECK PARTICLES
+COM_M31 = CenterOfMass("M31_000.txt",2)
+M31_pos = COM_M31.COM_P(1.0,4.0)
+M31_vel = COM_M31.COM_V(M31_pos[0],M31_pos[1],M31_pos[2])
+
+#--x,y,z pos & vel of m31 rel to COM
+COMX = COM_M31.x - float(M31_pos[0]/u.kpc)
+COMY = COM_M31.y - float(M31_pos[1]/u.kpc)
+COMZ = COM_M31.z - float(M31_pos[2]/u.kpc)
+
+#--3d radial position from galatic center
+RadPos = np.sqrt(COMX**2 + COMY**2)
+
+#--index the vaules within 7-9 kpc
+Rindex = np.where((RadPos > 7) & (RadPos < 9))
+###Zindex = np.where((zm31 > -1.5) & (zm31 < 1.5))
+nM31x = COMX[Rindex]
+nM31y = COMY[Rindex]
+nM31z = COMZ[Rindex]
+
+fig = plt.figure(figsize=(10,10))
+ax = plt.subplot(111)
+
+# plot the particle density for M31 
+plt.hist2d(nM31x, nM31y, bins=500, norm=LogNorm(), cmap='magma')
+plt.colorbar()
+
+#plt.hist2d(COMX, COMY, bins=500, norm=LogNorm(), cmap='viridis')
+#plt.colorbar()
+
+# Add axis labels
+plt.xlabel('x (kpc)', fontsize=22)
+plt.ylabel('y (kpc)', fontsize=22)
+
+#set axis limits
+plt.ylim(-30,30)
+plt.xlim(-30,30)
+
+#adjust tick label font size
+label_size = 22
+matplotlib.rcParams['xtick.labelsize'] = label_size 
+matplotlib.rcParams['ytick.labelsize'] = label_size
+
+
+
+
+
+plt.show()
+
 
     
 
-SunCan = SolarParticles("M31_000.txt", 2)
-what = SunCan.RadialPos(-377,608,-284, 0)
-print(what)
-        
         
