@@ -35,7 +35,7 @@ class SolarParticles:
 #--Use lab7 to help rearrange the merger to be face-on and plot the density profile at snap shots
 #--Create a histogram to see the radial distribution with repect to M31's galatic center of solar particles
 
-    def RadialPos(self, x,y,z, center):
+    def RadialPos(self, x,y,z):
         #INPUT: x,y,z positions, center of galaxy=0  
         #RETURNS: 3d coord of pcom or vcom of particals within 7-9 kpc
 
@@ -66,62 +66,46 @@ class SolarParticles:
                 
         #--particals within the new radius    
         RadPos2 = np.sqrt(nM31x**2 + nM31y**2)
-
         return RadPos2
     
-#--plot the ring of particles to see if the code works so far    
-SunCand = SolarParticles("M31_000.txt", 2)
-SunPart = SunCand.RadialPos(-377,608,-284, 0)
-print(SunPart)
+    
+    #--Compute the orbit of my ring particles with MW
+    #--I have MW_Orbit.txt which contains the orbit of disk particles of all snap shots
+    #--Use Orbits.py as a template
+    #--Snaps shots to obtain (0.0, 3.87, 5.87, 6.2 & 10.0)
+    
+    def M31SunsOrbit(self, ):
+        #INPUT:  
+        #OUTPUT: return the orbit of the M31 & MW system
 
-#######USING LAB7 TO CHECK PARTICLES
-COM_M31 = CenterOfMass("M31_000.txt",2)
-M31_pos = COM_M31.COM_P(1.0,4.0)
-M31_vel = COM_M31.COM_V(M31_pos[0],M31_pos[1],M31_pos[2])
+        #--work with disk particles of M31
+        DiskPart   = SolarParticles("M31_000.txt", 2)
+        #--take x,y,z to be the relative position of M31 to MW from CenterOfMass
+        SunCandM31 = self.RadialPos(-377, 608, -284)
 
-#--x,y,z pos & vel of m31 rel to COM
-COMX = COM_M31.x - float(M31_pos[0]/u.kpc)
-COMY = COM_M31.y - float(M31_pos[1]/u.kpc)
-COMZ = COM_M31.z - float(M31_pos[2]/u.kpc)
+        #--file of the orbit of MW from Orbits.py
+        MW = np.genfromtxt('MW_Orbit.txt',dtype = float, names=True)
+        #--MW vaules
+        MWtime = MW['t']
+        MWx    = MW['x']
+        MWy    = MW['y']
+        MWz    = MW['z']
 
-#--3d radial position from galatic center
-RadPos = np.sqrt(COMX**2 + COMY**2)
+        #--snapshots
+        beg_index = np.where(MWtime == 0.0) 
+        peri_1    = np.where(MWtime == 3.87)
+        peri_2    = np.where(MWtime == 5.87)
+        merg      = np.where(MWtime == 6.2)
+        end       = np.where(MWtime == 10.0)
 
-#--index the vaules within 7-9 kpc
-Rindex = np.where((RadPos > 7) & (RadPos < 9))
-###Zindex = np.where((zm31 > -1.5) & (zm31 < 1.5))
-nM31x = COMX[Rindex]
-nM31y = COMY[Rindex]
-nM31z = COMZ[Rindex]
-
-fig = plt.figure(figsize=(10,10))
-ax = plt.subplot(111)
-
-# plot the particle density for M31 
-plt.hist2d(nM31x, nM31y, bins=500, norm=LogNorm(), cmap='magma')
-plt.colorbar()
-
-#plt.hist2d(COMX, COMY, bins=500, norm=LogNorm(), cmap='viridis')
-#plt.colorbar()
-
-# Add axis labels
-plt.xlabel('x (kpc)', fontsize=22)
-plt.ylabel('y (kpc)', fontsize=22)
-
-#set axis limits
-plt.ylim(-30,30)
-plt.xlim(-30,30)
-
-#adjust tick label font size
-label_size = 22
-matplotlib.rcParams['xtick.labelsize'] = label_size 
-matplotlib.rcParams['ytick.labelsize'] = label_size
+        #--index vaules for peri_1
+        nMWx = MWx[peri_1]
+        nMWy = MWy[peri_1]
+        nMWz = MWz[peri_1]
 
 
+    
 
-
-
-plt.show()
 
 
     
