@@ -68,41 +68,23 @@ class SolarParticles:
         RadPos2 = np.sqrt(nM31x**2 + nM31y**2)
         return RadPos2
     
+#--work with disk particles of M31
+DiskPart   = SolarParticles("M31_000.txt", 2)
+#--take x,y,z to be the relative position of M31 to MW from CenterOfMass
+SunCandM31 = self.RadialPos(-377, 608, -284)
     
     #--Compute the orbit of my ring particles with MW
     #--I have MW_Orbit.txt which contains the orbit of disk particles of all snap shots
     #--Use Orbits.py as a template
     #--Snaps shots to obtain (0.0, 3.87, 5.87, 6.2 & 10.0)
     
-    def M31SunsOrbit(self, ):
-        #INPUT:  
+    def M31SunsOrbit(self, galaxy, Snap):
+        #INPUT:  galaxies, snap shots
         #OUTPUT: return the orbit of the M31 & MW system
-
-        #--work with disk particles of M31
-        DiskPart   = SolarParticles("M31_000.txt", 2)
-        #--take x,y,z to be the relative position of M31 to MW from CenterOfMass
-        SunCandM31 = self.RadialPos(-377, 608, -284)
-
-        #--file of the orbit of MW from Orbits.py
-        MW = np.genfromtxt('MW_Orbit.txt',dtype = float, names=True)
-        #--MW vaules
-        MWtime = MW['t']
-        MWx    = MW['x']
-        MWy    = MW['y']
-        MWz    = MW['z']
-
-        #--snapshots
-        beg_index = np.where(MWtime == 0.0) 
-        peri_1    = np.where(MWtime == 3.87)
-        peri_2    = np.where(MWtime == 5.87)
-        merg      = np.where(MWtime == 6.2)
-        end       = np.where(MWtime == 10.0)
-
-        #--index vaules for peri_1
-        nMWx = MWx[peri_1]
-        nMWy = MWy[peri_1]
-        nMWz = MWz[peri_1]
-
+        
+        #--file of the orbit of MW and the reduced M31 particles
+        #--take steps from Orbits.py, loop not needed, only need several snapshots
+        fileout = "Orbit_{}.txt".format(galaxy)
 
     
 
