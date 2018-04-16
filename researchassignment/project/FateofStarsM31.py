@@ -69,7 +69,7 @@ class SolarParticles:
         return RadPos2
     
 #--work with disk particles of M31
-DiskPart   = SolarParticles("M31_000.txt", 2)
+Disk_M31   = SolarParticles("M31_000.txt", 2)
 #--take x,y,z to be the relative position of M31 to MW from CenterOfMass
 SunCandM31 = self.RadialPos(-377, 608, -284)
     
@@ -78,12 +78,12 @@ SunCandM31 = self.RadialPos(-377, 608, -284)
     #--Use Orbits.py as a template
     #--Snaps shots to obtain (0.0, 3.87, 5.87, 6.2 & 10.0)
     
-    def M31SunsOrbit(self, galaxy, Snap):
-        #INPUT:  galaxies, snap shots
-        #OUTPUT: return the orbit of the M31 & MW system
+    def M31SunsOrbit(self, DiskPart, Snap):
+        #INPUT:  the particles I'm going to orbit, snap shots
+        #OUTPUT: return the orbit of the M31 & MW system at deseried snap shots
         
         #--file of the orbit of MW and the reduced M31 particles
-        #--take steps from Orbits.py, loop not needed, only need several snapshots
+        #--take steps from Orbits.py, if/when statement so not rerun code over and over 
         fileout = "Orbit_{}.txt".format(galaxy)
 
     
