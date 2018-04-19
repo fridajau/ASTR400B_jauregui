@@ -52,6 +52,10 @@ class SolarParticles:
         COMX = COM_M31.x - float(M31_pos[0]/u.kpc)
         COMY = COM_M31.y - float(M31_pos[1]/u.kpc)
         COMZ = COM_M31.z - float(M31_pos[2]/u.kpc)
+        
+        COMVX = COM_M31.vx - float(M31_vel[0]/(u.km/u.s))
+        COMVY = COM_M31.vy - float(M31_vel[1]/(u.km/u.s))
+        COMVZ = COM_M31.vz - float(M31_vel[2]/(u.km/u.s))
 
         #--3d radial position from galatic center
         RadPos = np.sqrt(COMX**2 + COMY**2)
@@ -66,26 +70,59 @@ class SolarParticles:
                 
         #--particals within the new radius    
         RadPos2 = np.sqrt(nM31x**2 + nM31y**2)
-        return RadPos2
-    
-#--work with disk particles of M31
-Disk_M31   = SolarParticles("M31_000.txt", 2)
-#--take x,y,z to be the relative position of M31 to MW from CenterOfMass
-SunCandM31 = self.RadialPos(-377, 608, -284)
-    
-    #--Compute the orbit of my ring particles with MW
-    #--I have MW_Orbit.txt which contains the orbit of disk particles of all snap shots
-    #--Use Orbits.py as a template
-    #--Snaps shots to obtain (0.0, 3.87, 5.87, 6.2 & 10.0)
-    
-    def M31SunsOrbit(self, DiskPart, Snap):
-        #INPUT:  the particles I'm going to orbit, snap shots
-        #OUTPUT: return the orbit of the M31 & MW system at deseried snap shots
-        
-        #--file of the orbit of MW and the reduced M31 particles
-        #--take steps from Orbits.py, if/when statement so not rerun code over and over 
-        fileout = "Orbit_{}.txt".format(galaxy)
+        return nM31x, nM31y, nM31z
 
+    
+    
+    def M31SunsOrbit(self, DiskPart, Snap, end, n):
+        #INPUT:  the particles I'm going to orbit, snap shots, integrator
+        #OUTPUT: return the orbit of the M31 & MW system at deseried snap shots
+            
+        #--Compute the orbit of my ring particles with MW
+        #--I have M31_Orbit.txt which contains the orbit of disk particles at all snap shots
+        #--Use Orbits.py as a template
+        #--Snaps shots to obtain (0.0, 3.87, 5.87, 6.2 & 10.0)
+        #--file of the orbit of MW and the reduced M31 particles
+        #--take steps from Orbits.py and hw5
+        
+        #--define the filename for the file that will store the orbit
+        fileout = "Orbit_{}.txt".format(DiskPart)
+
+        #--define an array with 7 columns that will store
+        #--t, x,y,z of the COM
+        Orbit = np.zeros((int(end/n)+1, 4))
+
+        #--for loop from start to end+1 in intervals of n
+        for i in np.arange(Snap, end+n, n):
+            #--define the filename for the galaxy using hw5 as example
+            ilbl = '000' + str(i)
+            ilbl = ilbl[-3:]
+            filename = "%s_"%(DiskPart) + ilbl + '.txt'
+            
+            #--COM M31 Sun-like stars
+            M31 = np.genfromtxt('M31_lifetime.txt', dtype = float, names=True)
+            COM = CenterOfMass('VLowRes/'+filename, 2)
+            Disk_M31 = SolarParticles("M31_000.txt", 2)
+            D_COMM31 = Disk_M31.RadialPos(-377, 608, -284)
+
+            #--row index of the Orbit array given as int(i)/n)
+            Orbit[int(i/n),0] = float(COM.time/u.Myr)/1000
+            #--store the COM pos and vel in the Orbit array, divide out the units
+            Orbit[int(i/n),1] = float(D_COMM31[0])
+            Orbit[int(i/n),2] = float(D_COMM31[1])
+            Orbit[int(i/n),3] = float(D_COMM31[2])
+            #--print the counter for the loop to the screen to know where the code at
+            print(i)
+        
+        #--rerun code for MW,M31,M33 with changed delta and VolDec vaules   
+        fileout = 'M31_Ring_0.txt'
+    
+        #--save the array Orbit to a file
+        np.savetxt(fileout, Orbit, header='t, x, y, z', comments='#',
+                   fmt=['%.2f', '%.2f', '%.2f', '%.2f', '%.2f', '%.2f', '%.2f'])
+
+        return Orbit
+    
     
 
 
