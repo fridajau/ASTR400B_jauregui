@@ -58,22 +58,61 @@ class SolarParticles:
         COMVZ = COM_M31.vz - float(M31_vel[2]/(u.km/u.s))
 
         #--3d radial position from galatic center
-        RadPos = np.sqrt(COMX**2 + COMY**2)
+        RadPos = np.sqrt(COMX**2 + COMY**2 + COMZ**2)
 
         #--index the vaules within 7-9 kpc
-        Rindex = np.where((RadPos > 7) & (RadPos < 9))
-        ###Zindex = np.where((zm31 > -1.5) & (zm31 < 1.5))
+        #Rindex = np.where((RadPos > 7) & (RadPos < 9) & (COMZ > -1.5) & (COMZ < 1.5))
+
+        Rindex = self.RadialIndex(COMX,COMY,COMZ)
         nM31x = COMX[Rindex]
         nM31y = COMY[Rindex]
         nM31z = COMZ[Rindex]
-        ###z3m31 = z2m31[Zindex]
                 
         #--particals within the new radius    
-        RadPos2 = np.sqrt(nM31x**2 + nM31y**2)
+        RadPos2 = np.sqrt(nM31x**2 + nM31y**2 + nM31z)
         return nM31x, nM31y, nM31z
 
-    
-    
+    def RadialIndex(self, x,y,z):
+        #INPUT:  x,y,z postions
+        #OUTPUT: the ring of particles
+        
+        #--obtain the index ring of particles to use later on to define at wanted snap shots
+        #--copy code from function RadialPos
+
+        COM_M31 = CenterOfMass("M31_000.txt",2)
+        M31_pos = COM_M31.COM_P(1.0,4.0)
+        M31_vel = COM_M31.COM_V(M31_pos[0],M31_pos[1],M31_pos[2])
+
+        COMX = COM_M31.x - float(M31_pos[0]/u.kpc)
+        COMY = COM_M31.y - float(M31_pos[1]/u.kpc)
+        COMZ = COM_M31.z - float(M31_pos[2]/u.kpc)
+        
+        COMVX = COM_M31.vx - float(M31_vel[0]/(u.km/u.s))
+        COMVY = COM_M31.vy - float(M31_vel[1]/(u.km/u.s))
+        COMVZ = COM_M31.vz - float(M31_vel[2]/(u.km/u.s))
+
+        #--3d radial position from galatic center
+        RadPos = np.sqrt(COMX**2 + COMY**2 + COMZ**2)
+
+        #--index the vaules within 7-9 kpc
+        Rindex = np.where((RadPos > 7) & (RadPos < 9) & (COMZ > -1.5) & (COMZ < 1.5))
+        return Rindex
+
+Disk_M31= SolarParticles("M31_000.txt", 2)
+radial_ring = Disk_M31.RadialPos(-377,608,-284)
+index_part = Disk_M31.RadialIndex(-377,608,-284)
+
+testx = radial_ring[0]
+testy = radial_ring[1]
+testz = radial_ring[2]
+
+rad = np.average(np.sqrt(testx**2 + testy**2 + testz**2))
+
+#print("Radial index",index_part)
+#print("Radial pos", np.mean(radial_ring))
+print("ave pos", rad)
+
+"""
     def M31SunsOrbit(self, DiskPart, Snap, end, n):
         #INPUT:  the particles I'm going to orbit, snap shots, integrator
         #OUTPUT: return the orbit of the M31 & MW system at deseried snap shots
@@ -111,10 +150,7 @@ class SolarParticles:
             Orbit[int(i/n),1] = float(D_COMM31[0])
             Orbit[int(i/n),2] = float(D_COMM31[1])
             Orbit[int(i/n),3] = float(D_COMM31[2])
-            #--print the counter for the loop to the screen to know where the code at
-            print(i)
-        
-        #--rerun code for MW,M31,M33 with changed delta and VolDec vaules   
+            
         fileout = 'M31_Ring_0.txt'
     
         #--save the array Orbit to a file
@@ -123,8 +159,12 @@ class SolarParticles:
 
         return Orbit
     
-    
 
+    #def SunCand_M33(self, ):
+        #--find the percentage of Sun Candinate stars that will fall into M33 from the Merger (3.87, 5.87, 6.2, 10.0)
+        #--use/find the radial vel at 8 kpc of M31
+        #--
+"""     
 
 
     
