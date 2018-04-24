@@ -35,19 +35,19 @@ class SolarParticles:
 #--Use lab7 to help rearrange the merger to be face-on and plot the density profile at snap shots
 #--Create a histogram to see the radial distribution with repect to M31's galatic center of solar particles
 
-    def RadialPos(self, x,y,z):
-        #INPUT: x,y,z positions, center of galaxy=0  
-        #RETURNS: 3d coord of pcom or vcom of particals within 7-9 kpc
+    def RadialIndex(self, x,y,z):
+        #INPUT:  x,y,z postions
+        #OUTPUT: the ring of particles
 
-        #--Use Orbits txt to obtain the COM of x,y,z vx,xy,vz of M31
+        #--use CenterOfMass to obtain the COM of x,y,z vx,xy,vz of M31
         #--snap shots to look out for (0.0, 3.87, 5.87, 6.2, 10.0)
-        #--index M31 vaules and return an array with the desired particles
+        #--obtain the index ring of particles to use later on to define at wanted snap shots
+        #--follow this function for radial positions
 
-        #--create a COM obeject for M31 using Disk Particles from CenterOfMass
+        #--creating a COM obeject for M31 using Disk Particles from CenterOfMass
         COM_M31 = CenterOfMass("M31_000.txt",2)
         M31_pos = COM_M31.COM_P(1.0,4.0)
         M31_vel = COM_M31.COM_V(M31_pos[0],M31_pos[1],M31_pos[2])
-
         #--x,y,z pos & vel of m31 rel to COM
         COMX = COM_M31.x - float(M31_pos[0]/u.kpc)
         COMY = COM_M31.y - float(M31_pos[1]/u.kpc)
@@ -56,33 +56,23 @@ class SolarParticles:
         COMVX = COM_M31.vx - float(M31_vel[0]/(u.km/u.s))
         COMVY = COM_M31.vy - float(M31_vel[1]/(u.km/u.s))
         COMVZ = COM_M31.vz - float(M31_vel[2]/(u.km/u.s))
-
         #--3d radial position from galatic center
         RadPos = np.sqrt(COMX**2 + COMY**2 + COMZ**2)
-
         #--index the vaules within 7-9 kpc
-        #Rindex = np.where((RadPos > 7) & (RadPos < 9) & (COMZ > -1.5) & (COMZ < 1.5))
+        Rindex = np.where((RadPos > 7) & (RadPos < 9) & (COMZ > -1.5) & (COMZ < 1.5))
+    
+        return Rindex
+    
+    def RadialPos(self, x,y,z):
+        #INPUT: x,y,z positions, center of galaxy=0  
+        #RETURNS: 3d coord of pcom or vcom of particals within 7-9 kpc
 
-        Rindex = self.RadialIndex(COMX,COMY,COMZ)
-        nM31x = COMX[Rindex]
-        nM31y = COMY[Rindex]
-        nM31z = COMZ[Rindex]
-                
-        #--particals within the new radius    
-        RadPos2 = np.sqrt(nM31x**2 + nM31y**2 + nM31z)
-        return nM31x, nM31y, nM31z
-
-    def RadialIndex(self, x,y,z):
-        #INPUT:  x,y,z postions
-        #OUTPUT: the ring of particles
-        
-        #--obtain the index ring of particles to use later on to define at wanted snap shots
-        #--copy code from function RadialPos
+        #--index M31 vaules and return an array with the desired particles
 
         COM_M31 = CenterOfMass("M31_000.txt",2)
         M31_pos = COM_M31.COM_P(1.0,4.0)
         M31_vel = COM_M31.COM_V(M31_pos[0],M31_pos[1],M31_pos[2])
-
+       
         COMX = COM_M31.x - float(M31_pos[0]/u.kpc)
         COMY = COM_M31.y - float(M31_pos[1]/u.kpc)
         COMZ = COM_M31.z - float(M31_pos[2]/u.kpc)
@@ -93,14 +83,17 @@ class SolarParticles:
 
         #--3d radial position from galatic center
         RadPos = np.sqrt(COMX**2 + COMY**2 + COMZ**2)
+        #--use Rindex function to always return the ring of particles
+        Rindex = self.RadialIndex(COMX,COMY,COMZ)
+        nM31x = COMX[Rindex]
+        nM31y = COMY[Rindex]
+        nM31z = COMZ[Rindex]
 
-        #--index the vaules within 7-9 kpc
-        Rindex = np.where((RadPos > 7) & (RadPos < 9) & (COMZ > -1.5) & (COMZ < 1.5))
-        return Rindex
+        return nM31x, nM31y, nM31z
+    
 
 Disk_M31= SolarParticles("M31_000.txt", 2)
 radial_ring = Disk_M31.RadialPos(-377,608,-284)
-index_part = Disk_M31.RadialIndex(-377,608,-284)
 
 testx = radial_ring[0]
 testy = radial_ring[1]
@@ -108,8 +101,6 @@ testz = radial_ring[2]
 
 rad = np.average(np.sqrt(testx**2 + testy**2 + testz**2))
 
-#print("Radial index",index_part)
-#print("Radial pos", np.mean(radial_ring))
 print("ave pos", rad)
 
 """
