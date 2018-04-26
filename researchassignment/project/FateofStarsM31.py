@@ -57,15 +57,15 @@ class SolarParticles:
         COMVY = COM_M31.vy - float(M31_vel[1]/(u.km/u.s))
         COMVZ = COM_M31.vz - float(M31_vel[2]/(u.km/u.s))
         #--3d radial position from galatic center
-        RadPos = np.sqrt(COMX**2 + COMY**2 + COMZ**2)
+        RadPos = np.sqrt(COMX**2 + COMY**2)
         #--index the vaules within 7-9 kpc
-        Rindex = np.where((RadPos > 7) & (RadPos < 9) & (COMZ > -1.5) & (COMZ < 1.5))
+        Rindex = np.where((RadPos > 7) & (RadPos < 9) & (COMZ > -1.0) & (COMZ < 1.0))
     
         return Rindex
     
     def RadialPos(self, x,y,z):
         #INPUT: x,y,z positions, center of galaxy=0  
-        #RETURNS: 3d coord of pcom or vcom of particals within 7-9 kpc
+        #RETURNS: 3d coord of pcom or vcom of particals within 7-9 kpc a snap shot 0
 
         #--index M31 vaules and return an array with the desired particles
 
@@ -82,7 +82,7 @@ class SolarParticles:
         COMVZ = COM_M31.vz - float(M31_vel[2]/(u.km/u.s))
 
         #--3d radial position from galatic center
-        RadPos = np.sqrt(COMX**2 + COMY**2 + COMZ**2)
+        RadPos = np.sqrt(COMX**2 + COMY**2)
         #--use Rindex function to always return the ring of particles
         Rindex = self.RadialIndex(COMX,COMY,COMZ)
         nM31x = COMX[Rindex]
@@ -91,17 +91,27 @@ class SolarParticles:
 
         return nM31x, nM31y, nM31z
     
-
+#--checking if it returns ring of particles
 Disk_M31= SolarParticles("M31_000.txt", 2)
 radial_ring = Disk_M31.RadialPos(-377,608,-284)
-
 testx = radial_ring[0]
 testy = radial_ring[1]
 testz = radial_ring[2]
 
 rad = np.average(np.sqrt(testx**2 + testy**2 + testz**2))
-
 print("ave pos", rad)
+
+fig = plt.figure(figsize=(10,10))
+ax = plt.subplot(111)
+
+plt.xlabel('x (kpc)', fontsize=22)
+plt.ylabel('y (kpc)', fontsize=22)
+
+plt.hist2d(testx, testy, bins=400, norm=LogNorm(), cmap='magma')
+plt.colorbar()
+plt.ylim(-30,30)
+plt.xlim(-30,30)
+plt.show()
 
 """
     def M31SunsOrbit(self, DiskPart, Snap, end, n):
