@@ -57,9 +57,9 @@ class SolarParticles:
         COMVY = COM_M31.vy - float(M31_vel[1]/(u.km/u.s))
         COMVZ = COM_M31.vz - float(M31_vel[2]/(u.km/u.s))
         #--3d radial position from galatic center
-        RadPos = np.sqrt(COMX**2 + COMY**2)
-        #--index the vaules within 7-9 kpc
-        Rindex = np.where((RadPos > 7) & (RadPos < 9) & (COMZ > -1.0) & (COMZ < 1.0))
+        RadPos = np.sqrt(COMX**2 + COMY**2 + COMZ**2)
+        #--index the vaules within 7-9 kpc 
+        Rindex = np.where((RadPos > 7) & (RadPos < 9) & (COMZ > -18.5) & (COMZ < 18.5))
     
         return Rindex
     
@@ -82,38 +82,59 @@ class SolarParticles:
         COMVZ = COM_M31.vz - float(M31_vel[2]/(u.km/u.s))
 
         #--3d radial position from galatic center
-        RadPos = np.sqrt(COMX**2 + COMY**2)
+        RadPos = np.sqrt(COMX**2 + COMY**2 + COMZ**2)
         #--use Rindex function to always return the ring of particles
         Rindex = self.RadialIndex(COMX,COMY,COMZ)
         nM31x = COMX[Rindex]
         nM31y = COMY[Rindex]
         nM31z = COMZ[Rindex]
 
-        return nM31x, nM31y, nM31z
-    
-#--checking if it returns ring of particles
+        nM31vx = COMVX[Rindex]
+        nM31vy = COMVY[Rindex]
+        nM31vz = COMVZ[Rindex]
+
+        return nM31x, nM31y, nM31z, nM31vx, nM31vy, nM31vz
+
+#--testing code
 Disk_M31= SolarParticles("M31_000.txt", 2)
 radial_ring = Disk_M31.RadialPos(-377,608,-284)
+
 testx = radial_ring[0]
 testy = radial_ring[1]
 testz = radial_ring[2]
 
-rad = np.average(np.sqrt(testx**2 + testy**2 + testz**2))
-print("ave pos", rad)
+testvx = radial_ring[3]
+testvy = radial_ring[4]
+testvz = radial_ring[5]
 
+rad = np.average(np.sqrt(testx**2 + testy**2 + testz**2))
+vel = np.average(np.sqrt(testvx**2 + testvy**2 + testvz**2))
+
+#--plot testing
 fig = plt.figure(figsize=(10,10))
 ax = plt.subplot(111)
+plt.hist2d(testx, testy,bins=500, norm=LogNorm(), cmap='magma')
+plt.colorbar()
 
 plt.xlabel('x (kpc)', fontsize=22)
 plt.ylabel('y (kpc)', fontsize=22)
 
-plt.hist2d(testx, testy, bins=400, norm=LogNorm(), cmap='magma')
-plt.colorbar()
-plt.ylim(-30,30)
-plt.xlim(-30,30)
+label_size = 22
+matplotlib.rcParams['xtick.labelsize'] = label_size 
+matplotlib.rcParams['ytick.labelsize'] = label_size
+
+plt.ylim(-40,40)
+plt.xlim(-40,40)
 plt.show()
 
-"""
+print(testvx)
+print("ave pos", rad)
+print("ave vel", vel)
+
+
+
+    
+"""    
     def M31SunsOrbit(self, DiskPart, Snap, end, n):
         #INPUT:  the particles I'm going to orbit, snap shots, integrator
         #OUTPUT: return the orbit of the M31 & MW system at deseried snap shots
@@ -160,7 +181,6 @@ plt.show()
 
         return Orbit
     
-
     #def SunCand_M33(self, ):
         #--find the percentage of Sun Candinate stars that will fall into M33 from the Merger (3.87, 5.87, 6.2, 10.0)
         #--use/find the radial vel at 8 kpc of M31
