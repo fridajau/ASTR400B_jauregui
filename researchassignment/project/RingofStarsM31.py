@@ -9,8 +9,13 @@ from CenterofMass import CenterOfMass
 #---class
 #---index disk particles from data to work only with disk particles
 class SolarParticles:
-    def __init__(self, filename, ptype):
-        self.time, self.total, self.data = Read(filename)
+    def __init__(self, galaxy, snap, ptype):
+        ilbl = '000' + str(snap)
+        # remove all but the last 3 digits
+        ilbl = ilbl[-3:]
+        # create filenames
+        self.filename='%s_'%(galaxy) + ilbl + '.txt'
+        self.time, self.total, self.data = Read('VLowRes/'+self.filename)
         #--storing data for disk particles
         self.index = np.where(self.data['type'] == ptype)
         
@@ -35,7 +40,7 @@ class SolarParticles:
         #--follow this function for radial positions
 
         #--creating a COM obeject for M31 using Disk Particles from CenterOfMass
-        COM_M31 = CenterOfMass("M31_000.txt",2)
+        COM_M31 = CenterOfMass('VLowRes/'+self.filename,2)
         M31_pos = COM_M31.COM_P(1.0,4.0)
         M31_vel = COM_M31.COM_V(M31_pos[0],M31_pos[1],M31_pos[2])
         #--x,y,z pos & vel of m31 rel to COM
@@ -59,7 +64,7 @@ class SolarParticles:
 
         #--index M31 vaules and return an array with the desired particles
 
-        COM_M31 = CenterOfMass("M31_000.txt",2)
+        COM_M31 = CenterOfMass('VLowRes/'+self.filename,2)
         M31_pos = COM_M31.COM_P(1.0,4.0)
         M31_vel = COM_M31.COM_V(M31_pos[0],M31_pos[1],M31_pos[2])
        
@@ -86,12 +91,9 @@ class SolarParticles:
         return nM31x, nM31y, nM31z, nM31vx, nM31vy, nM31vz
 
 #--testing code
-Disk_M31= SolarParticles("M31_000.txt", 2)
+Disk_M31 = SolarParticles("M31", 3, 2)
 radial_ring = Disk_M31.RadialPos(-377,608,-284)
-radial_index = Disk_M31.RadialIndex(-377,608,-284)
-#print(radial_index)
-
-
+#radial_index = Disk_M31.RadialIndex(-377,608,-284)
 
 testx  = np.around(radial_ring[0],3)
 testy  = np.around(radial_ring[1],3)
@@ -100,9 +102,12 @@ testvx = np.around(radial_ring[3],3)
 testvy = np.around(radial_ring[4],3)
 testvz = np.around(radial_ring[5],3)
 
+fewpart = testx[:3]
+print(fewpart)
+
 rad = np.average(np.sqrt(testx**2 + testy**2 + testz**2))
 vel = np.average(np.sqrt(testvx**2 + testvy**2 + testvz**2))
 
-#print(testx.tolist())
+print("xpos at snap 003", testx)
 #print("ave pos", np.around(rad,3))
 #print("ave vel", np.around(vel,3))
