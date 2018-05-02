@@ -91,23 +91,41 @@ class SolarParticles:
         return nM31x, nM31y, nM31z, nM31vx, nM31vy, nM31vz
 
 #--testing code
-Disk_M31 = SolarParticles("M31", 3, 2)
+#--m31
+Disk_M31    = SolarParticles("M31", 437, 2)
 radial_ring = Disk_M31.RadialPos(-377,608,-284)
-#radial_index = Disk_M31.RadialIndex(-377,608,-284)
-
 testx  = np.around(radial_ring[0],3)
 testy  = np.around(radial_ring[1],3)
 testz  = np.around(radial_ring[2],3)
 testvx = np.around(radial_ring[3],3)
 testvy = np.around(radial_ring[4],3)
 testvz = np.around(radial_ring[5],3)
+#--mw
+Disk_MW    = CenterOfMass("MW_271.txt", 2)
+MW_pos     = Disk_MW.COM_P(1.0,4.0)
+xmw = Disk_MW.x #- float(MW_pos[0]/u.kpc)
+ymw = Disk_MW.y #- float(MW_pos[1]/u.kpc)
+zmw = Disk_MW.z #- float(MW_pos[2]/u.kpc)
+#--m33
+Disk_M33 = CenterOfMass("M33_437.txt", 2)
+M33_pos  = Disk_M33.COM_P(1.0,4.0)
+xm33 = Disk_M33.x #- float(M33_pos[0]/u.kpc)
+ym33 = Disk_M33.y #- float(M33_pos[1]/u.kpc)
+zm33 = Disk_M33.z #- float(M33_pos[2]/u.kpc)
 
-fewpart = testx[:3]
-print(fewpart)
-
-rad = np.average(np.sqrt(testx**2 + testy**2 + testz**2))
-vel = np.average(np.sqrt(testvx**2 + testvy**2 + testvz**2))
-
-print("xpos at snap 003", testx)
-#print("ave pos", np.around(rad,3))
-#print("ave vel", np.around(vel,3))
+#--plot testing
+fig = plt.figure(figsize=(10,10))
+ax = plt.subplot(111)
+plt.hist2d(testx, testy, bins=130, norm=LogNorm(), cmap='magma')
+plt.colorbar()
+plt.hist2d(xm33, ym33, bins=700, norm=LogNorm(), cmap='Blues')
+plt.colorbar()
+plt.text(-38, 38,'T=6.2')
+plt.xlabel('x (kpc)', fontsize=22)
+plt.ylabel('y (kpc)', fontsize=22)
+label_size = 22
+matplotlib.rcParams['xtick.labelsize'] = label_size 
+matplotlib.rcParams['ytick.labelsize'] = label_size
+plt.ylim(-200,200)
+plt.xlim(-200,200)
+plt.show()
