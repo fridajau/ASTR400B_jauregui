@@ -92,7 +92,7 @@ class SolarParticles:
 
 #--testing code
 #--m31
-Disk_M31    = SolarParticles("M31", 437, 2)
+Disk_M31    = SolarParticles("M31", 411, 2)
 radial_ring = Disk_M31.RadialPos(-377,608,-284)
 testx  = np.around(radial_ring[0],3)
 testy  = np.around(radial_ring[1],3)
@@ -101,31 +101,70 @@ testvx = np.around(radial_ring[3],3)
 testvy = np.around(radial_ring[4],3)
 testvz = np.around(radial_ring[5],3)
 #--mw
-Disk_MW    = CenterOfMass("MW_271.txt", 2)
+Disk_MW    = CenterOfMass("MW_411.txt", 2)
 MW_pos     = Disk_MW.COM_P(1.0,4.0)
-xmw = Disk_MW.x #- float(MW_pos[0]/u.kpc)
-ymw = Disk_MW.y #- float(MW_pos[1]/u.kpc)
-zmw = Disk_MW.z #- float(MW_pos[2]/u.kpc)
+xmw = Disk_MW.x - float(MW_pos[0]/u.kpc)
+ymw = Disk_MW.y - float(MW_pos[1]/u.kpc)
+zmw = Disk_MW.z - float(MW_pos[2]/u.kpc)
 #--m33
-Disk_M33 = CenterOfMass("M33_437.txt", 2)
+Disk_M33 = CenterOfMass("M33_411.txt", 2)
 M33_pos  = Disk_M33.COM_P(1.0,4.0)
-xm33 = Disk_M33.x #- float(M33_pos[0]/u.kpc)
-ym33 = Disk_M33.y #- float(M33_pos[1]/u.kpc)
-zm33 = Disk_M33.z #- float(M33_pos[2]/u.kpc)
+xm33 = Disk_M33.x - float(M33_pos[0]/u.kpc)
+ym33 = Disk_M33.y - float(M33_pos[1]/u.kpc)
+zm33 = Disk_M33.z - float(M33_pos[2]/u.kpc)
 
 #--plot testing
 fig = plt.figure(figsize=(10,10))
 ax = plt.subplot(111)
-plt.hist2d(testx, testy, bins=130, norm=LogNorm(), cmap='magma')
+plt.hist2d(testx, testy, bins=100, norm=LogNorm(), cmap='magma')
 plt.colorbar()
-plt.hist2d(xm33, ym33, bins=700, norm=LogNorm(), cmap='Blues')
-plt.colorbar()
-plt.text(-38, 38,'T=6.2')
+plt.hist2d(xm33, ym33, bins=400, norm=LogNorm(), cmap='Blues')
+#plt.colorbar()
+plt.hist2d(xmw, ymw, bins=400, norm=LogNorm(), cmap='Reds')
+#plt.colorbar()
+plt.text(-150, 150,'T=5.87')
 plt.xlabel('x (kpc)', fontsize=22)
 plt.ylabel('y (kpc)', fontsize=22)
 label_size = 22
 matplotlib.rcParams['xtick.labelsize'] = label_size 
 matplotlib.rcParams['ytick.labelsize'] = label_size
-plt.ylim(-200,200)
+plt.ylim(-150,200)
 plt.xlim(-200,200)
+#plt.show()
+
+#--ratio of sun candinates
+Disk_M31_2 = CenterOfMass("M31_411.txt", 2)
+M31_pos    = Disk_M31_2.COM_P(1.0,4.0)
+xm31 = Disk_M31_2.x #- float(M33_pos[0]/u.kpc)
+ym31 = Disk_M31_2.y #- float(M33_pos[1]/u.kpc)
+zm31 = Disk_M31_2.z #- float(M33_pos[2]/u.kpc)
+
+totpartxr   = len(testx)
+totpartyr   = len(testy)
+totpartzr   = len(testz)
+totringpart = totpartxr+totpartyr+totpartzr
+
+totpartx = len(xm31)
+totparty = len(ym31)
+totpartz = len(zm31)
+totparta = totpartx+totparty+totpartz
+
+
+
+#--plots
+fig = plt.figure(figsize=(10,10))
+ax = plt.subplot(111)
+d = testx.tolist()
+solarcand = d['Distance (kpc)']
+plt.hist([solarcand], color=['orange'])
+#plt.show()
+#plt.hist(, ratioring, normed=1, facecolor='g', alpha=0.75)
+plt.xlabel('Distance rom Merger Remnant (kpc)', fontsize=22)
+plt.ylabel('Solar Candinates', fontsize=22)
+label_size = 22
+matplotlib.rcParams['xtick.labelsize'] = label_size 
+matplotlib.rcParams['ytick.labelsize'] = label_size
+plt.axis([0, 160, 0, 0.5])
 plt.show()
+
+

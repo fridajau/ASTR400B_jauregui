@@ -31,25 +31,32 @@ def M31SunsOrbit(galaxy, Snap, end, n):
         ilbl = '000' + str(i)
         ilbl = ilbl[-3:]
         filename = "%s_"%(galaxy) + ilbl + '.txt'
-        #--COM M31 Sun-like stars from RingofStarsM31
-        Disk_M31   = SolarParticles("M31_000.txt", 2)
-        radial_M31 = Disk_M31.RadialIndex(-377,608,-284)
-       
+        #--COM M31 Sun-like stars from RingofStarsM31 at snapshot 0
+        Disk_M31   = SolarParticles("M31",4, 2)
+        radial_M31 = Disk_M31.RadialPos(-377,608,-284)
+        COM   = CenterOfMass('VLowRes/'+filename, 2)
         #--store the COM pos and vel in the Orbit array, divide out the units
-        Orbit[int(i/n),0] = float(GCOM.time/u.Myr/1000)
-        Orbit[int(i/n),1] = np.around(radial_M31[0],3)
-        Orbit[int(i/n),2] = np.around(radial_M31[1],3)
-        Orbit[int(i/n),3] = np.around(radial_M31[2],3)
-        Orbit[int(i/n),4] = np.around(radial_M31[3],3)
-        Orbit[int(i/n),5] = np.around(radial_M31[4],3)
-        Orbit[int(i/n),6] = np.around(radial_M31[5],3)
+        Orbit[int(i/n),0] = float(COM.time/u.Myr)/1000
+        Orbit[int(i/n),1] = radial_M31[0][:1]
+        Orbit[int(i/n),2] = radial_M31[1][:1]
+        Orbit[int(i/n),3] = radial_M31[2][:1]
+        Orbit[int(i/n),4] = radial_M31[3][:1]
+        Orbit[int(i/n),5] = radial_M31[4][:1]
+        Orbit[int(i/n),6] = radial_M31[5][:1]
+        #--check
+        print(i)
             
-        fileout = 'M31_Ring_0.txt'
+    fileout = 'M31_Ring_0.txt'
     
-        #--save the array Orbit to a file
-        np.savetxt(fileout, Orbit, header='t, x, y, z, vx, vy, vz', comments='#',
+    #--save the array Orbit to a file
+    np.savetxt(fileout, Orbit, header='t, x, y, z, vx, vy, vz', comments='#',
                    fmt=['%.2f', '%.2f', '%.2f', '%.2f', '%.2f', '%.2f', '%.2f'])
     
     return Orbit
 
-M31_ring = M31SunsOrbit(0, 1, 1)
+M31_ring = M31SunsOrbit("M31", 0, 1, 1)
+
+
+    #def CricVelM31():
+        
+
