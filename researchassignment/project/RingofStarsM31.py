@@ -39,7 +39,7 @@ class SolarParticles:
         COMZ0 = COM_M310.z - float(M31_pos0[2]/u.kpc)
         #--radial distance from center of galaxy
         RadPos = np.sqrt(COMX0**2 + COMY0**2)
-        #--index the vaules within 7-9 kpc CHANGE ZCOM
+        #--index the vaules within 7-9 kpc CHANGE ZCOM to a resaonable scale height
         self.Rindex = np.where((RadPos > 7) & (RadPos < 9) & (COMZ0 > -5) & (COMZ0 < 5))
 
 
@@ -70,10 +70,22 @@ class SolarParticles:
 
         return nM31x, nM31y, nM31z, nM31vx, nM31vy, nM31vz
 
-    #def IntoM33(self):
+    
+    #Obtain a vaule of radii from M33 that will pass through/bound the ring particals as MW-M31 merges
+    def IntoM33(self):
+        #INPUT:   self
+        #RETURNS: seperation of x - m33com.x of pos vaules
+
+        #--use center of mass to find half the radius of m33
+        #--find m33 com from center of mass
+        #--use radpos to get the x,y,z positions of m33
+        #--rindex for range of radii
+        #--delta_r must be less than r/2 of m33
+        #--returns some seperation of x - m33com.x
+    
     
 
-    
+ """   
 #Obtain positions of particles for M31, MW, M33
 #--m31
 Ring_M31    = SolarParticles("M31", 700, 2)  #--"galaxy", snapshot, disk particles
@@ -165,14 +177,4 @@ plt.text(40,80,'Blue:  T=0.0')
 #plt.xticks([20,40,60,80,100])
 #plt.axis([0, 150, 0, 400])
 plt.show()
-
-"""
-new function
-use center of mass to find half the radius of m33
-find m33 com from center of mass
-use radpos to get the x,y,z positions of m33
-rindex for range of radii
-
-delta_r must be less than r/2 of m33
-returns some seperation of x - m33com.x
 """
